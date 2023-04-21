@@ -1,10 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Models;
 
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
+    public int Id { get; set; }
+
     [Required]
     [Column(TypeName = "varchar(255)")]
     public string Email { get; set; } = null!;
@@ -23,5 +27,7 @@ public class User
     [Required]
     [Column(TypeName = "varchar(15)")]
     public RoleEnum Role { get; set; }
+
+    [Column(TypeName = "varchar(255)")]
     public string? Avatar { get; set; }
 }

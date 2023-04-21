@@ -9,15 +9,15 @@ const login = () => {
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: process.env.FIREBASE_APIKEY,
-    authDomain: `${process.env.FIREBASE_APP_ID}.firebaseapp.com`,
-    projectId: `${process.env.FIREBASE_APP_ID}`,
-    storageBucket: `${process.env.FIREBASE_APP_ID}.appspot.com`,
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
+    authDomain: `${process.env.NEXT_PUBLIC_APP_ID}.firebaseapp.com`,
+    projectId: `${process.env.NEXT_PUBLIC_APP_ID}`,
+    storageBucket: `${process.env.NEXT_PUBLIC_APP_ID}.appspot.com`,
     messagingSenderId: "178437899545",
     appId: "1:178437899545:web:6c9708d466234839d7f188",
   };
 
-  // Initialize Firebase
+  // // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
