@@ -27,6 +27,21 @@ public class UserService
         return await _repository.CreateAsync(newUser);
     }
 
+    public async Task<TokenResponse> LoginAsync(LoginRequest body)
+    {
+        var user = await _repository.GetByEmailAsync(body.Email);
+        var errorMessage = "Usuário ou senha incorretos";
+        if (user is null)
+        {
+            throw new BadHttpRequestException(errorMessage);
+        }
+        if (user.Password is null || !BCrypt.Net.BCrypt.Verify(body.Password, user.Password))
+        {
+            throw new BadHttpRequestException(errorMessage);
+        }
+        return new TokenResponse(_tokenService.GenerateToken(user));
+    }
+
     public async Task<TokenResponse> CreateAsync(CreateUser body)
     {
         var user = await _repository.GetByEmailAsync(body.Email);
@@ -34,7 +49,11 @@ public class UserService
         {
             throw new BadHttpRequestException("Usuário já cadastrado");
         }
-        var newUser = await CreateUserAsync<CreateUser>(body);
+        if (body.Password != body?.ConfirmPassword)
+        {
+            throw new BadHttpRequestException("Senhas não conhecidem");
+        }
+        var newUser = await CreateUserAsync<CreateUser>(body!);
         return new TokenResponse(_tokenService.GenerateToken(newUser));
     }
 

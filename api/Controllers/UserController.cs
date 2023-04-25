@@ -17,6 +17,19 @@ public class UserController : ControllerBase
         _service = service;
     }
 
+    [HttpPost("login")]
+    public async Task<ActionResult<TokenResponse>> LoginAsync([FromBody] LoginRequest body)
+    {
+        try
+        {
+            return Ok(await _service.LoginAsync(body));
+        }
+        catch (BadHttpRequestException err)
+        {
+            return BadRequest(new { message = err.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<TokenResponse>> CreateAsync([FromBody] CreateUser body)
     {
