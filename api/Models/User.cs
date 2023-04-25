@@ -22,7 +22,13 @@ public class User
     public string LastName { get; set; } = null!;
 
     [Column(TypeName = "varchar(255)")]
-    public string? Password { get; set; }
+    [Required]
+    private string? _password;
+    public string? Password
+    {
+        get { return _password; }
+        set { _password = BCrypt.Net.BCrypt.HashPassword(value); }
+    }
 
     [Required]
     [Column(TypeName = "varchar(15)")]
