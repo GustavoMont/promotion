@@ -63,18 +63,17 @@ builder.Services
         };
     });
 
-// .AddJwtBearer(auth =>
-// {
-//     auth.RequireHttpsMetadata = false;
-//     auth.SaveToken = true;
-//     auth.TokenValidationParameters = new TokenValidationParameters
-//     {
-//         ValidateIssuerSigningKey = true,
-//         IssuerSigningKey = new SymmetricSecurityKey(key),
-//         ValidateIssuer = false,
-//         ValidateAudience = false
-//     };
-// });
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+        }
+    );
+});
 
 var app = builder.Build();
 
@@ -84,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
