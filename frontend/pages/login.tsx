@@ -1,48 +1,23 @@
-import React from "react";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import React, { useEffect } from "react";
 import { TextInput } from "@/components/form/TextInput";
 import { UserIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { Title } from "@/components/Typograph/Title";
 import { Button } from "@/components/common/Button";
-import api from "@/config/api";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { Login } from "@/services/userService";
 
 const Login = () => {
-  // Import the functions you need from the SDKs you need
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  const { googleSignIn, user, login } = useAuth();
+  const { register, handleSubmit } = useForm<Login>();
+  const router = useRouter();
 
-  // Your web app's Firebase configuration
-
-  // // Initialize Firebase
-
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
-
-  const googleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      GoogleAuthProvider.credentialFromResult(result);
-      const token = await auth.currentUser?.getIdToken();
-      const { email, displayName, photoURL: avatar } = result.user;
-      const [name, lastName] = displayName?.split(" ") ?? ["", ""];
-      await api.post(
-        "/users/external",
-        {
-          email,
-          lastName,
-          name,
-          avatar,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } catch (error) {
-      /* empty */
+  useEffect(() => {
+    if (user) {
+      router.push("/");
     }
-  };
+  }, [router, user]);
 
   return (
     <div className="px-4 relative h-screen flex items-center justify-center">
@@ -53,17 +28,15 @@ const Login = () => {
         <Title level="h2" className="text-primary">
           PROMOTION
         </Title>
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(login)}>
           <TextInput
+            register={register("email")}
             icon={<UserIcon className="w-6 h-6" />}
             placeholder="Digite seu usuário"
           />
           <TextInput
+            register={register("password")}
+            isPassword
             icon={<LockClosedIcon className="w-6 h-6" />}
             placeholder="Digite seu usuário"
           />
@@ -77,45 +50,6 @@ const Login = () => {
       </div>
     </div>
   );
-
-  // return (
-  //   <div>
-  //     <h1>login</h1>
-  //     <button
-  //       onClick={() => {
-  //         signInWithPopup(auth, provider)
-  //           .then((result) => {
-  //             // This gives you a Google Access Token. You can use it to access the Google API.
-  //             const credential =
-  //               GoogleAuthProvider.credentialFromResult(result);
-  //             const token = credential?.accessToken;
-  //             auth.currentUser?.getIdToken().then((idToken) => {
-  //               console.log(idToken);
-  //             });
-
-  //             // The signed-in user info.
-  //             const user = result.user;
-  //             console.log(user);
-
-  //             // IdP data available using getAdditionalUserInfo(result)
-  //             // ...
-  //           })
-  //           .catch((error) => {
-  //             // Handle Errors here.
-  //             const errorCode = error.code;
-  //             const errorMessage = error.message;
-  //             // The email of the user's account used.
-  //             const email = error.customData.email;
-  //             // The AuthCredential type that was used.
-  //             const credential = GoogleAuthProvider.credentialFromError(error);
-  //             // ...
-  //           });
-  //       }}
-  //     >
-  //       GOOOOGLEKKKKKKK
-  //     </button>
-  //   </div>
-  // );
 };
 
 interface BackgroundColorProps {

@@ -30,6 +30,20 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<ActionResult<UserResponse>> Me()
+    {
+        try
+        {
+            return Ok(await _service.GetMe());
+        }
+        catch (Exception error)
+        {
+            return BadRequest(new { message = error.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<TokenResponse>> CreateAsync([FromBody] CreateUser body)
     {

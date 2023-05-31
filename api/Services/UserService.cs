@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Services;
 
-public class UserService
+public class UserService : BaseService
 {
     private readonly UserRepository _repository;
     private readonly TokenService _tokenService;
 
     public UserService(
         [FromServices] UserRepository repository,
-        [FromServices] TokenService tokenService
+        [FromServices] TokenService tokenService,
+        [FromServices] IHttpContextAccessor httpContextAccessor
     )
+        : base(httpContextAccessor)
     {
         _repository = repository;
         _tokenService = tokenService;
@@ -40,6 +42,21 @@ public class UserService
             throw new BadHttpRequestException(errorMessage);
         }
         return new TokenResponse(_tokenService.GenerateToken(user));
+    }
+
+    public async Task<UserResponse> GetMe()
+    {
+        return await GetById(GetCurrentUserId());
+    }
+
+    public async Task<UserResponse> GetById(int id)
+    {
+        var user = await _repository.GetById(id);
+        if (user is null)
+        {
+            throw new Exception("Usuário não encontrado");
+        }
+        return user.Adapt<UserResponse>();
     }
 
     public async Task<TokenResponse> CreateAsync(CreateUser body)

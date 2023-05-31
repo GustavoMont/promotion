@@ -25,4 +25,9 @@ public class UserRepository
         await _context.SaveChangesAsync();
         return newUser;
     }
+
+    public async Task<User?> GetById(int id)
+    {
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
+    }
 }
