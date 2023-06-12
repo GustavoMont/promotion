@@ -36,4 +36,5 @@ public class User
 
     [Column(TypeName = "varchar(255)")]
     public string? Avatar { get; set; }
+    public List<Post> Posts { get; set; } = null!;
 }
