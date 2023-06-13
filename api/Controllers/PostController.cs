@@ -17,11 +17,40 @@ public class PostController : ControllerBase
     }
 
     [Authorize]
+    [HttpPost]
     public async Task<ActionResult<PostResponse>> CreateAsync([FromBody] CreatePostRequest newPost)
     {
         try
         {
-            return StatusCode(201, await _service.CreateAsync(newPost));
+            var post = await _service.CreateAsync(newPost);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = post.Id }, post);
+        }
+        catch (System.Exception error)
+        {
+            return BadRequest(new { message = error.Message });
+        }
+    }
+
+    [HttpGet("{id:int}")]
+    [ActionName(nameof(GetByIdAsync))]
+    public async Task<ActionResult<PostResponse>> GetByIdAsync([FromRoute] int id)
+    {
+        try
+        {
+            return Ok(await _service.GetByIdAsync(id));
+        }
+        catch (System.Exception error)
+        {
+            return NotFound(new { message = error.Message });
+        }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<PostResponse>>> GetAllAsync()
+    {
+        try
+        {
+            return Ok(await _service.GetAllAsync());
         }
         catch (System.Exception error)
         {

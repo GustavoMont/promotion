@@ -27,4 +27,20 @@ public class PostService : BaseService
         var createdPost = await _repository.CreateAsync(post);
         return createdPost.Adapt<PostResponse>();
     }
+
+    public async Task<PostResponse> GetByIdAsync(int id)
+    {
+        var post = await _repository.GetByIdAsync(id);
+        if (post == null)
+        {
+            throw new Exception("Post não encontrado");
+        }
+        return post.Adapt<PostResponse>();
+    }
+
+    public async Task<List<PostResponse>> GetAllAsync()
+    {
+        var posts = await _repository.GetAllAsync();
+        return posts.Adapt<List<PostResponse>>();
+    }
 }
