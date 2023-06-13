@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -10,9 +11,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230612233237_UpdateAddress")]
+    partial class UpdateAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,18 +37,12 @@ namespace api.Migrations
                     b.Property<string>("Number")
                         .HasColumnType("varchar(10)");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Street")
                         .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("PostId")
-                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });
@@ -86,6 +83,9 @@ namespace api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -164,15 +164,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.Post", "Post")
-                        .WithOne("Address")
-                        .HasForeignKey("api.Models.Address", "PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("City");
-
-                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("api.Models.Post", b =>
@@ -184,12 +176,6 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("api.Models.Post", b =>
-                {
-                    b.Navigation("Address")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Models.User", b =>

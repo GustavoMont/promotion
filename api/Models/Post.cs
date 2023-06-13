@@ -21,7 +21,7 @@ public class Post
     [Column(TypeName = "longtext")]
     public string Description { get; set; } = null!;
     public int UserId { get; set; }
-    public User User { get; set; } = null!;
+    public User? User { get; set; }
 
     public void Create()
     {
@@ -36,6 +36,5 @@ public class Post
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public int AddressId { get; set; }
-    public Address Address = null!;
+    public Address Address { get; set; } = null!;
 }

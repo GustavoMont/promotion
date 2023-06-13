@@ -19,6 +19,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<PostService>();
 
 builder.Services.AddHttpContextAccessor();
 

@@ -9,13 +9,17 @@ public class Address
     public int Id { get; set; }
 
     [Column(TypeName = "varchar(150)")]
-    public string Street { get; set; } = null!;
+    public string? Street { get; set; }
 
     [Column(TypeName = "varchar(150)")]
-    public string Neighborhood { get; set; } = null!;
+    public string? Neighborhood { get; set; }
 
     [Column(TypeName = "varchar(10)")]
-    public string Number { get; set; } = null!;
+    public string? Number { get; set; }
+
+    [Required]
     public int CityId { get; set; }
-    public City City { get; set; } = null!;
+    public City? City { get; set; }
+    public int PostId { get; set; }
+    public Post? Post { get; set; }
 }
