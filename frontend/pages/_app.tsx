@@ -23,7 +23,7 @@ initializeApp(firebaseConfig);
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={poppins.className}>
+    <main className={`${poppins.className} px-4`}>
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>

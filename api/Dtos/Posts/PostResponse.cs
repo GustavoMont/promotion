@@ -1,3 +1,4 @@
+using api.Dtos.User;
 using api.Models;
 
 namespace api.Dtos.Posts;
@@ -11,7 +12,7 @@ public class PostResponse
     public decimal OldPrice { get; set; }
     public decimal PromotionPrice { get; set; }
     public int UserId { get; set; }
-    public Models.User? User { get; set; }
+    public UserResponse? User { get; set; }
 }
 
 public class AddressResponse

@@ -6,16 +6,14 @@ import {
   getCurrentUser,
   login as userLogin,
 } from "@/services/userService";
-import { authCookieKey, destroyToken, getToken } from "@/utils/auth";
+import { authCookieKey, destroyToken } from "@/utils/auth";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { useRouter } from "next/router";
 import { setCookie } from "nookies";
 import {
   PropsWithChildren,
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -34,7 +32,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setUserByToken(access);
   };
   const logout = async () => destroyToken();
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
   const auth = getAuth();
@@ -78,15 +75,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     );
     await setUserByToken(accessToken.access);
   };
-
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      router.push("/login");
-    } else if (!user) {
-      setUserByToken(token);
-    }
-  }, [router, setUserByToken, user]);
 
   const googleSignIn = async () => {
     try {

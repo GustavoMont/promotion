@@ -1,23 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TextInput } from "@/components/form/TextInput";
 import { UserIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { Title } from "@/components/Typograph/Title";
 import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { Login } from "@/services/userService";
 
 const Login = () => {
-  const { googleSignIn, user, login } = useAuth();
+  const { googleSignIn, login } = useAuth();
   const { register, handleSubmit } = useForm<Login>();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [router, user]);
 
   return (
     <div className="px-4 relative h-screen flex items-center justify-center">
