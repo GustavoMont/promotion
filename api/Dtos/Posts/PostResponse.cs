@@ -1,5 +1,5 @@
+using api.Dtos.City;
 using api.Dtos.User;
-using api.Models;
 
 namespace api.Dtos.Posts;
 
@@ -26,5 +26,5 @@ public class AddressResponse
     public string? Number { get; set; }
 
     public int CityId { get; set; }
-    public City? City { get; set; }
+    public CityResponse? City { get; set; }
 }

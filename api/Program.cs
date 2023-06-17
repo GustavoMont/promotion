@@ -21,6 +21,8 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<CityRepository>();
+builder.Services.AddScoped<CityService>();
 
 builder.Services.AddHttpContextAccessor();
 

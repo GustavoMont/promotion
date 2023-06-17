@@ -1,6 +1,6 @@
 export function currencyFormatter(value: number) {
   const valueNumber = parseFloat(value.toFixed(2));
-  const userLang = navigator.language;
+  const userLang = "pt-Br";
   const localeOptions = {
     style: "currency",
     currency: "BRL",

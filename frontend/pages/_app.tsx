@@ -7,6 +7,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ReactElement, ReactNode } from "react";
 import { NextPage } from "next";
 import { Layout } from "@/components/common/layout/Layout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -38,6 +40,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     <AuthProvider>
       <main className={poppins.className}>
         {getLayout(<Component {...pageProps} />)}
+        <ToastContainer />
       </main>
     </AuthProvider>
   );

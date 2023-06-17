@@ -5,7 +5,7 @@ export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
       <NavBar />
-      <main className="px-4 pb-10">{children}</main>
+      <main className="px-4 pb-10 md:px-10">{children}</main>
     </>
   );
 };

@@ -38,12 +38,12 @@ export const TextInput: React.FC<Props> = ({
 
       <input
         {...props}
-        {...register}
         name={name}
-        type={isPassword ? "password" : "text"}
+        type={props.type || (isPassword ? "password" : "text")}
         className={`${
           icon ? "pl-9" : ""
         } bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+        {...register}
       />
     </div>
   );

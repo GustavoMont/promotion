@@ -16,6 +16,7 @@ public class PostRepository
 
     public async Task<Post> CreateAsync(Post newPost)
     {
+        newPost.Create();
         await _context.Posts.AddAsync(newPost);
         await _context.SaveChangesAsync();
         return newPost;
@@ -28,6 +29,7 @@ public class PostRepository
 
     public async Task<List<Post>> GetAllAsync()
     {
-        return await _context.Posts.ToListAsync();
+        System.Console.WriteLine("calaboka");
+        return await _context.Posts.OrderByDescending(post => post.Id).AsNoTracking().ToListAsync();
     }
 }
