@@ -29,7 +29,6 @@ public class PostRepository
 
     public async Task<List<Post>> GetAllAsync()
     {
-        System.Console.WriteLine("calaboka");
         return await _context.Posts.OrderByDescending(post => post.Id).AsNoTracking().ToListAsync();
     }
 }
