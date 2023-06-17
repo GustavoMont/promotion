@@ -4,6 +4,9 @@ import { initializeApp } from "firebase/app";
 
 import { Poppins } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { ReactElement, ReactNode } from "react";
+import { NextPage } from "next";
+import { Layout } from "@/components/common/layout/Layout";
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -21,12 +24,21 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-export default function App({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>);
   return (
-    <main className={`${poppins.className} px-4`}>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
-    </main>
+    <AuthProvider>
+      <main className={poppins.className}>
+        {getLayout(<Component {...pageProps} />)}
+      </main>
+    </AuthProvider>
   );
 }

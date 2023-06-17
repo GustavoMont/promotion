@@ -1,3 +1,4 @@
+import { Title } from "@/components/Typograph/Title";
 import { PostCard } from "@/components/posts/PostCard";
 import api from "@/config/api";
 import { Post } from "@/models/Post";
@@ -14,8 +15,11 @@ export default function Home({ posts }: Props) {
       <Head>
         <title>Promotion - Escolha a melhor oferta!</title>
       </Head>
-      <main>
-        <div className="flex flex-col gap-5">
+      <main className="pt-10">
+        <Title level="h2" className="mb-10 text-center text-accent">
+          Confira todas as ofertas!
+        </Title>
+        <div className="flex flex-col gap-5 md:grid md:grid-cols-2  2xl:grid-cols-3">
           {posts.map((post) => (
             <PostCard post={post} key={post.id} />
           ))}

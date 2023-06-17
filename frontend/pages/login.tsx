@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { TextInput } from "@/components/form/TextInput";
 import { UserIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { Title } from "@/components/Typograph/Title";
@@ -6,8 +6,9 @@ import { Button } from "@/components/common/Button";
 import { useAuth } from "@/context/AuthContext";
 import { useForm } from "react-hook-form";
 import { Login } from "@/services/userService";
+import { NextPageWithLayout } from "./_app";
 
-const Login = () => {
+const Login: NextPageWithLayout = () => {
   const { googleSignIn, login } = useAuth();
   const { register, handleSubmit } = useForm<Login>();
 
@@ -16,7 +17,7 @@ const Login = () => {
       <BackgroundColor color="primary" position="top" />
       <BackgroundColor color="black" position="bottom" />
 
-      <div className="bg-white max-w-lg p-6 flex flex-col items-center gap-4 rounded-lg">
+      <div className="bg-gray-100 max-w-lg p-6 flex flex-col items-center gap-4 rounded-lg">
         <Title level="h2" className="text-primary">
           PROMOTION
         </Title>
@@ -59,5 +60,9 @@ const BackgroundColor: React.FC<BackgroundColorProps> = ({
     } ${position === "top" ? "top-0" : "bottom-0"}`}
   />
 );
+
+Login.getLayout = (page: ReactElement) => {
+  return <>{page}</>;
+};
 
 export default Login;
