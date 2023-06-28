@@ -30,4 +30,9 @@ public class UserRepository
     {
         return await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
     }
+
+    public void UpdatePassword(User user)
+    {
+        _context.SaveChanges(); 
+    }
 }
