@@ -73,4 +73,19 @@ public class UserController : ControllerBase
             return BadRequest(new { message = err.Message });
         }
     }
+
+    [HttpPut("update-password")]
+    [Authorize]
+    public  ActionResult PutUpdate([FromBody] RequestUpdatePassword request)
+    {
+        try
+        {
+            _service.UpdatePassword(request); 
+            return NoContent();
+        }
+        catch(System.Exception e)
+        {
+            return BadRequest(); 
+        }
+    }
 }

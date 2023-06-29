@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using api.Dtos.Auth;
 using api.Dtos.User;
 using api.Models;
@@ -70,7 +71,7 @@ public class UserService : BaseService
         {
             throw new BadHttpRequestException("Senhas não conhecidem");
         }
-        var newUser = await CreateUserAsync<CreateUser>(body!);
+        var newUser = await CreateUserAsync(body!);
         return new TokenResponse(_tokenService.GenerateToken(newUser));
     }
 
@@ -85,5 +86,17 @@ public class UserService : BaseService
         }
 
         return new GetOrCreateResponse(statusCode, _tokenService.GenerateToken(user));
+    }
+
+    public async void UpdatePassword(RequestUpdatePassword request)
+    {
+        var userId = GetCurrentUserId();
+        var user = await _repository.GetById(userId); 
+        if(!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user?.Password))
+        {
+            throw new BadHttpRequestException("Senha atual incorreta");
+        }
+        user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword); 
+        _repository.UpdatePassword(user); 
     }
 }
