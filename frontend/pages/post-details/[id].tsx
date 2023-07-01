@@ -28,9 +28,7 @@ export default function Details({ post }: { post: Post }) {
     <div>
       <h1>{post?.title}</h1>
       <p>{post?.description}</p>
-      <p>
-        {post.address ? post.address.city.name : <p>Sem endereço cadastrado</p>}
-      </p>
+      <p>{post.address ? post.address.city.name : "Sem endereço cadastrado"}</p>
     </div>
   );
 }
