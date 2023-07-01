@@ -25,7 +25,7 @@ export const NavBar = () => {
       ({ renderCondition }) => renderCondition === undefined || renderCondition
     )
     .map((item) => (
-      <li className="font-medium" key={item.name}>
+      <li onClick={item.onClick} className="font-medium" key={item.name}>
         <Link href={item.href}>{item.name}</Link>
       </li>
     ));

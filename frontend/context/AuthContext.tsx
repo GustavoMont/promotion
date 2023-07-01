@@ -8,6 +8,7 @@ import {
 } from "@/services/userService";
 import { authCookieKey, destroyToken, getToken } from "@/utils/auth";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/router";
 import { setCookie } from "nookies";
 import {
   PropsWithChildren,
@@ -28,6 +29,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const router = useRouter();
   const login = async (data: Login) => {
     const { access } = await userLogin(data);
     setUserByToken(access);
@@ -35,6 +37,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const logout = async () => {
     setUser(null);
     destroyToken();
+    onSignIn();
   };
   const [user, setUser] = useState<User | null>(null);
 
@@ -80,6 +83,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     await setUserByToken(accessToken.access);
   };
 
+  const onSignIn = () => {
+    router.push("/");
+  };
+
   const googleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -89,6 +96,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const [name, lastName] = displayName?.split(" ") ?? ["", ""];
       if (email && avatar && token) {
         socialSignIn({ email, avatar, name, lastName }, token);
+        onSignIn();
       }
     } catch (error) {
       /* empty */
