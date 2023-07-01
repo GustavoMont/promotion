@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Post } from "@/models/Post";
 import { currencyFormatter } from "@/utils/formatter";
+import Link from "next/link";
 import React from "react";
 
 interface Props {
@@ -8,6 +9,10 @@ interface Props {
 }
 
 export const PostCard: React.FC<Props> = ({ post }) => {
+  const handleSeeMore = () => {
+    console.log("Faz o L");
+  };
+
   return (
     <div className="card lg:card-side bg-base-100 shadow-xl">
       <figure>
@@ -24,9 +29,14 @@ export const PostCard: React.FC<Props> = ({ post }) => {
             {currencyFormatter(post.promotionPrice)}
           </p>
         </div>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Ver mais</button>
-        </div>
+        <Link
+          href={`/post-details/${post.id}`}
+          className="card-actions justify-end"
+        >
+          <button className="btn btn-primary" onClick={handleSeeMore}>
+            Ver mais
+          </button>
+        </Link>
       </div>
     </div>
   );

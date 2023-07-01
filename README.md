@@ -29,7 +29,7 @@ _Obs.: As permissões podem ser apenas na database do projeto ou em todas as dat
 1. Instale o dotnet-ef usando o comando:
 
 ```bash
-  dotnet tool install
+  dotnet tool install 
 ```
 
 2. Clonar o arquivo **`.env.example`** e renomear a cópia para **`.env`**
