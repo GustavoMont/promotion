@@ -1,6 +1,7 @@
 import React from "react";
 import api from "@/config/api";
 import { Post } from "@/models/Post";
+import { PostCard } from "@/components/posts/PostCard";
 
 export const getStaticPaths = async () => {
   const { data: posts } = await api.get<Post[]>("/posts");
@@ -25,10 +26,8 @@ export const getStaticProps = async (context: any) => {
 
 export default function Details({ post }: { post: Post }) {
   return (
-    <div>
-      <h1>{post?.title}</h1>
-      <p>{post?.description}</p>
-      <p>{post.address ? post.address.city.name : "Sem endereço cadastrado"}</p>
+    <div className="flex justify-center items-center h-[calc(100vh-110px)]">
+      <PostCard post={post} />
     </div>
   );
 }

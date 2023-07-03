@@ -16,7 +16,7 @@ export const NavBar = () => {
   const { user, logout } = useAuth();
   const items: Option[] = [
     { name: "Ofertas recentes", href: "/" },
-    { href: "/perfil", name: "Minhas publicações" },
+    { href: "/my-posts", name: "Minhas publicações" },
     { href: "/", name: "Sair", onClick: logout, renderCondition: !!user },
     { href: "/login", name: "Fazer login", renderCondition: !user },
   ];
