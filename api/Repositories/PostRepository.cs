@@ -24,11 +24,18 @@ public class PostRepository
 
     public async Task<Post?> GetByIdAsync(int id)
     {
-        return await _context.Posts.AsNoTracking().FirstOrDefaultAsync(post => post.Id == id);
+        return await _context.Posts
+            .AsNoTracking()
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(post => post.Id == id);
     }
 
     public async Task<List<Post>> GetAllAsync()
     {
-        return await _context.Posts.OrderByDescending(post => post.Id).AsNoTracking().ToListAsync();
+        return await _context.Posts
+            .OrderByDescending(post => post.Id)
+            .Include(p => p.User)
+            .AsNoTracking()
+            .ToListAsync();
     }
 }
