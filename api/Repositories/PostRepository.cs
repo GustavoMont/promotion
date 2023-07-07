@@ -27,6 +27,7 @@ public class PostRepository
         return await _context.Posts
             .AsNoTracking()
             .Include(p => p.User)
+            .Include(p => p.Address)
             .FirstOrDefaultAsync(post => post.Id == id);
     }
 
@@ -35,6 +36,7 @@ public class PostRepository
         return await _context.Posts
             .OrderByDescending(post => post.Id)
             .Include(p => p.User)
+            .Include(p => p.Address)
             .AsNoTracking()
             .ToListAsync();
     }
