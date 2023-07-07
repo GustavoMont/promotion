@@ -8,6 +8,7 @@ namespace api.Services;
 
 public class PostService : BaseService
 {
+  private readonly string _defaultImage = "https://firebasestorage.googleapis.com/v0/b/promotion-5f5c6.appspot.com/o/images%2Fposts%2FDefault%20Image.png?alt=media&token=";
     private readonly PostRepository _repository;
 
     public PostService(
@@ -22,6 +23,10 @@ public class PostService : BaseService
     public async Task<PostResponse> CreateAsync(CreatePostRequest newPost)
     {
         var userId = GetCurrentUserId();
+        if (newPost.Image == null)
+        {
+          n
+        }
         var post = newPost.Adapt<Post>();
         post.UserId = userId;
         var createdPost = await _repository.CreateAsync(post);
