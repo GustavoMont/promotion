@@ -3,7 +3,6 @@ import { Post } from "@/models/Post";
 import { currencyFormatter } from "@/utils/formatter";
 import Link from "next/link";
 import React from "react";
-import AddressCard from "./address/addressCard";
 
 interface Props {
   post: Post;
@@ -27,7 +26,6 @@ export const PostCard: React.FC<Props> = ({ post }) => {
             {currencyFormatter(post.promotionPrice)}
           </p>
         </div>
-        {/* <AddressCard address={post.address} /> */}
         <Link
           href={`/post-details/${post.id}`}
           className="card-actions justify-end"

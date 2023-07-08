@@ -1,10 +1,12 @@
 import React from "react";
 import api from "@/config/api";
 import { Post } from "@/models/Post";
-import { PostCard } from "@/components/posts/PostCard";
+import FullPostCard from "@/components/posts/FullPostCard";
 
 export const getStaticPaths = async () => {
   const { data: posts } = await api.get<Post[]>("/posts");
+
+  console.log(posts);
 
   const paths = posts.map((post) => {
     return {
@@ -24,10 +26,14 @@ export const getStaticProps = async (context: any) => {
   return { props: { post } };
 };
 
-export default function Details({ post }: { post: Post }) {
+type DetailsProps = {
+  post: Post;
+};
+
+export default function Details({ post }: DetailsProps) {
   return (
-    <div className="flex justify-center items-center h-[calc(100vh-110px)]">
-      <PostCard post={post} />
+    <div className="flex justify-center items-center">
+      <FullPostCard post={post} />
     </div>
   );
 }
