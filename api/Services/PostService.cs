@@ -8,27 +8,33 @@ namespace api.Services;
 
 public class PostService : BaseService
 {
-  private readonly string _defaultImage = "https://firebasestorage.googleapis.com/v0/b/promotion-5f5c6.appspot.com/o/images%2Fposts%2FDefault%20Image.png?alt=media&token=";
+    private readonly FileUploadService _fileUploadService;
     private readonly PostRepository _repository;
 
     public PostService(
         [FromServices] PostRepository repository,
-        [FromServices] IHttpContextAccessor httpContextAccessor
+        [FromServices] IHttpContextAccessor httpContextAccessor,
+        [FromServices] FileUploadService fileUploadService
     )
         : base(httpContextAccessor)
     {
         _repository = repository;
+        _fileUploadService = fileUploadService;
     }
 
     public async Task<PostResponse> CreateAsync(CreatePostRequest newPost)
     {
         var userId = GetCurrentUserId();
-        if (newPost.Image == null)
-        {
-          n
-        }
         var post = newPost.Adapt<Post>();
         post.UserId = userId;
+        if (newPost.Image != null)
+        {
+            post.Image = await _fileUploadService.UploadAsync(newPost.Image, "post");
+        }
+        else
+        {
+            post.Image = _fileUploadService.GetDefaultImageUrl("post");
+        }
         var createdPost = await _repository.CreateAsync(post);
         return createdPost.Adapt<PostResponse>();
     }

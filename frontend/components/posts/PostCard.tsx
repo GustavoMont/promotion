@@ -10,9 +10,11 @@ interface Props {
 export const PostCard: React.FC<Props> = ({ post }) => {
   return (
     <div className="card lg:card-side bg-base-100 shadow-xl">
-      <figure>
-        <img src={"https://placehold.co/600X400"} alt="Album" />
-      </figure>
+      {post.image ? (
+        <figure>
+          <img src={post.image} alt="Album" />
+        </figure>
+      ) : null}
       <div className="card-body">
         <h2 className="card-title">{post.title}</h2>
         <p>{post.description}</p>

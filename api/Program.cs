@@ -1,5 +1,4 @@
 using System.Text;
-using api;
 using api.Data;
 using api.Repositories;
 using api.Services;
@@ -10,6 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 DotEnv.Load();
+
+if (!Directory.Exists("wwwroot"))
+{
+    Directory.CreateDirectory("wwwroot");
+    FileUploadService.LoadDefaultImage();
+}
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = Encoding.ASCII.GetBytes(Settings.GetJwtKey());
@@ -23,6 +28,7 @@ builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CityRepository>();
 builder.Services.AddScoped<CityService>();
+builder.Services.AddScoped<FileUploadService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -82,6 +88,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions { RequestPath = "/api/public" });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

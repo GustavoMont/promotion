@@ -63,6 +63,7 @@ const AddPost: React.FC<Props> = ({ cities }) => {
               <span className="label-text">Foto do produto:</span>
             </label>
             <input
+              {...register("image")}
               type="file"
               className="file-input file-input-primary file-input-bordered w-full max-w-xs"
             />
