@@ -49,7 +49,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return StatusCode(201, await _service.CreateAsync(body));
+            return StatusCode(201, await _service.CreateAuthAsync(body));
         }
         catch (BadHttpRequestException err)
         {
@@ -67,6 +67,22 @@ public class UserController : ControllerBase
         {
             var result = await _service.GetOrCreateAsync(body);
             return StatusCode(result.StatusCode, result.Response);
+        }
+        catch (System.Exception err)
+        {
+            return BadRequest(new { message = err.Message });
+        }
+    }
+
+    [HttpPost("team")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<UserResponse>> CreateTeamUserAsync(
+        [FromBody] CreateTeamUserRequest body
+    )
+    {
+        try
+        {
+            return StatusCode(201, await _service.CreateTeamUserAsync(body));
         }
         catch (System.Exception err)
         {
