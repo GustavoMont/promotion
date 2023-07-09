@@ -19,8 +19,7 @@ export default function Home({ posts }: Props) {
         <Title level="h2" className="mb-10 text-center text-accent">
           Confira todas as ofertas!
         </Title>
-        <div className="flex flex-col gap-5 md:grid md:grid-cols-2  2xl:grid-cols-3 border-solid border-2 border-red-500">
-          
+        <div className="flex flex-col gap-5 md:grid md:grid-cols-2  2xl:grid-cols-3">
           {posts.map((post) => (
             <PostCard post={post} key={post.id} />
           ))}
