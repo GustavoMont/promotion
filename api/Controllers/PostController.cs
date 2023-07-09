@@ -46,11 +46,11 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<PostResponse>>> GetAllAsync()
+    public async Task<ActionResult<List<PostResponse>>> GetAllAsync([FromQuery] int? userId)
     {
         try
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(userId));
         }
         catch (System.Exception error)
         {
