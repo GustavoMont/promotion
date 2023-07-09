@@ -23,6 +23,8 @@ builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CityRepository>();
 builder.Services.AddScoped<CityService>();
+builder.Services.AddScoped<ComplaintRepository>();
+builder.Services.AddScoped<ComplaintService>();
 
 builder.Services.AddHttpContextAccessor();
 
