@@ -23,12 +23,6 @@ public class UserService : BaseService
         _tokenService = tokenService;
     }
 
-    private async Task<User> CreateUserAsync<T>(T body)
-    {
-        var newUser = body!.Adapt<User>();
-        return await _repository.CreateAsync(newUser);
-    }
-
     public async Task<TokenResponse> LoginAsync(LoginRequest body)
     {
         var user = await _repository.GetByEmailAsync(body.Email);
@@ -59,7 +53,13 @@ public class UserService : BaseService
         return user.Adapt<UserResponse>();
     }
 
-    public async Task<TokenResponse> CreateAsync(CreateUser body)
+    private async Task<User> CreateUserAsync<T>(T body)
+    {
+        var newUser = body!.Adapt<User>();
+        return await _repository.CreateAsync(newUser);
+    }
+
+    private async Task<User> CreateUserByRouteAsync(CreateUser body)
     {
         var user = await _repository.GetByEmailAsync(body.Email);
         if (user is not null)
@@ -71,6 +71,18 @@ public class UserService : BaseService
             throw new BadHttpRequestException("Senhas não conhecidem");
         }
         var newUser = await CreateUserAsync<CreateUser>(body!);
+        return newUser;
+    }
+
+    public async Task<UserResponse> CreateTeamUserAsync(CreateTeamUserRequest body)
+    {
+        var newUser = await CreateUserByRouteAsync(body);
+        return newUser.Adapt<UserResponse>();
+    }
+
+    public async Task<TokenResponse> CreateAuthAsync(CreateUser body)
+    {
+        var newUser = await CreateUserByRouteAsync(body);
         return new TokenResponse(_tokenService.GenerateToken(newUser));
     }
 
