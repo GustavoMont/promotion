@@ -31,9 +31,10 @@ public class PostRepository
             .FirstOrDefaultAsync(post => post.Id == id);
     }
 
-    public async Task<List<Post>> GetAllAsync()
+    public async Task<List<Post>> GetAllAsync(int? userId = null)
     {
         return await _context.Posts
+            .Where(p => userId == null || p.UserId == userId)
             .OrderByDescending(post => post.Id)
             .Include(p => p.User)
             .Include(p => p.Address)
