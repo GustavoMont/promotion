@@ -27,7 +27,7 @@ export const PostCard: React.FC<Props> = ({ post }) => {
           </p>
         </div>
         <Link
-          href={`/post-details/${post.id}`}
+          href={`/postagem-completa/${post.id}`}
           className="card-actions justify-end"
         >
           <button className="btn btn-primary">Ver mais</button>
