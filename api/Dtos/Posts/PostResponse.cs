@@ -13,6 +13,16 @@ public class PostResponse
     public decimal PromotionPrice { get; set; }
     public int UserId { get; set; }
     public UserResponse? User { get; set; }
+    public List<PostComplaintResponse> Complaints { get; set; } = null!;
+}
+
+public class PostComplaintResponse
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public UserResponse User { get; set; } = null!;
+    public string Reason { get; set; } = null!;
+    public string? Explain { get; set; }
 }
 
 public class AddressResponse
