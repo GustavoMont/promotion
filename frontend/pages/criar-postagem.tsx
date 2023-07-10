@@ -20,11 +20,13 @@ const AddPost: React.FC<Props> = ({ cities }) => {
   const { register, handleSubmit } = useForm<CreatePost>();
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
+
   const onSubmit = async (data: CreatePost) => {
     try {
       setIsCreating(true);
       await createPost({
         ...data,
+        address: data.address,
         oldPrice: data.oldPrice,
         promotionPrice: data.promotionPrice,
       });
@@ -57,7 +59,7 @@ const AddPost: React.FC<Props> = ({ cities }) => {
             {...register("description")}
             placeholder="Descreve a promoção"
             className="textarea textarea-bordered textarea-lg w-full md:h-full"
-          ></textarea>
+          />
           <div className="flex gap-4">
             <TextInput
               type="number"
