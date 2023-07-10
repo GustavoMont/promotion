@@ -30,5 +30,18 @@ public class Context : DbContext
             new City { Id = 3, Name = "Varzea da Palma" }
         };
         modelBuilder.Entity<City>().HasData(cities);
+        List<User> users = new List<User>
+        {
+            new User
+            {
+                Email = "admin@admin.com",
+                Id = 1,
+                Name = "Adminelson",
+                LastName = "Souza",
+                Password = "senha_admin1234",
+                Role = RoleEnum.ADMIN
+            }
+        };
+        modelBuilder.Entity<User>().HasData(users);
     }
 }

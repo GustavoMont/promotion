@@ -49,9 +49,9 @@ public class PostService : BaseService
         return post.Adapt<PostResponse>();
     }
 
-    public async Task<List<PostResponse>> GetAllAsync()
+    public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
     {
-        var posts = await _repository.GetAllAsync();
+        var posts = await _repository.GetAllAsync(userId);
         return posts.Adapt<List<PostResponse>>();
     }
 }
