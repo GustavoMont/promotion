@@ -13,6 +13,8 @@ public class PostResponse
     public decimal PromotionPrice { get; set; }
     public int UserId { get; set; }
     public UserResponse? User { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
 }
 
 public class AddressResponse
