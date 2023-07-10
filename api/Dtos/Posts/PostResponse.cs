@@ -15,6 +15,7 @@ public class PostResponse
     public UserResponse? User { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+    public string Image { get; set; } = null!;
 }
 
 public class AddressResponse

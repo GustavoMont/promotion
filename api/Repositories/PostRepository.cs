@@ -27,7 +27,7 @@ public class PostRepository
         return await _context.Posts
             .AsNoTracking()
             .Include(p => p.User)
-            .Include(p => p.Address)
+            .Include(p => p.Address.City)
             .FirstOrDefaultAsync(post => post.Id == id);
     }
 
