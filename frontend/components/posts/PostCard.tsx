@@ -10,7 +10,7 @@ interface Props {
 
 export const PostCard: React.FC<Props> = ({ post }) => {
   return (
-    <div className="card lg:card-side bg-base-100 shadow-xl">
+    <div className="p-4 card lg:card-side bg-base-100 shadow-xl rounded-t-lg border-t-8 border-t-primary ">
       <figure>
         <img src={"https://placehold.co/600X400"} alt="Album" />
       </figure>

@@ -2,7 +2,6 @@ import React from "react";
 import { Button } from "../common/Button";
 import { Post } from "@/models/Post";
 import Label from "../common/Label";
-import AddressCard from "./address/AddressCard";
 import { Select } from "../form/Select";
 
 type EditPostModalProps = {

@@ -4,10 +4,12 @@ import { Post } from "@/models/Post";
 import { currencyFormatter } from "@/utils/formatter";
 import React, { useState } from "react";
 import AddressCard from "./address/AddressCard";
-import { useForm } from "react-hook-form";
-import { Button } from "../common/Button";
 import ReportPostModal from "./ReportPostModal";
-import { FlagIcon } from "@heroicons/react/24/outline";
+import {
+  FlagIcon,
+  HandThumbDownIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/outline";
 import { Title } from "../Typograph/Title";
 
 type FullPostCardProps = {
@@ -18,36 +20,37 @@ const FullPostCard = ({ post }: FullPostCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="flex flex-col border-2 border-black h-full p-4 gap-8 md:flex-row w-full">
+    <div className="flex flex-col p-2 gap-8 md:flex-row w-full h-full justify-center">
       {showModal ? <ReportPostModal setShowModal={setShowModal} /> : null}
 
-      <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full">
+      <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px]">
         <div className="flex gap-2 items-center justify-between">
-          <div className="flex flex-col items-center gap-1">
+          {/* <div className="flex flex-col items-center gap-1">
             <img
               src={post.user.avatar || "bonzi.jpg"}
               className="rounded-full w-[40px] h-[40px]"
             />
-            <div>{post?.user ? post?.user?.name : "Nome de usuário"}</div>
-          </div>
 
-          <div className="flex flex-col items-end gap-2">
-            <FlagIcon
-              className="h-10 w-10 text-danger font-medium p-1 rounded-md  cursor-pointer hover:bg-dark-danger hover:text-white transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105"
-              onClick={() => setShowModal(true)}
-            />
+            <div>{post?.user ? post?.user?.name : "Nome de usuário"}</div>
+          </div> */}
+          <Title className="underline">{post.title}</Title>
+          <div
+            className="flex flex-col text-danger  p-2 items-center gap-2 hover:underline cursor-pointer"
+            onClick={() => setShowModal(true)}
+          >
+            <FlagIcon className="h-10 w-10 text-danger font-medium p-1 rounded-md   transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105" />
+            <p className="text-xs italic">Denunciar</p>
           </div>
         </div>
-        <figure>
+        <figure className="border-2 flex items-center justify-center">
           <img
-            className="max-w-[300px] max-h-[300px] rounded"
+            className=" rounded "
             src={"https://placehold.co/600X400"}
             alt="Album"
           />
         </figure>
 
-        <div className="my-2 flex flex-col gap-2 justify-between items-start">
-          <Title>{post.title}</Title>
+        <div className="my-2 p-2 flex gap-2 justify-between items-center">
           <div className="flex flex-col gap-1">
             <p className="text-red-500 font-thin text-xs line-through">
               {currencyFormatter(post.oldPrice)}
@@ -56,10 +59,15 @@ const FullPostCard = ({ post }: FullPostCardProps) => {
               {currencyFormatter(post.promotionPrice)}
             </p>
           </div>
+
+          <div className="flex gap-8">
+            <HandThumbUpIcon className="w-[30px] text-primary" />
+            <HandThumbDownIcon className="w-[30px] text-danger" />
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full">
+      <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px]">
         <div>
           <Title>Mais informações</Title>
           <p>{post.description}</p>
