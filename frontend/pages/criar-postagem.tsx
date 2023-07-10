@@ -3,11 +3,10 @@ import { Select } from "@/components/form/Select";
 import { TextInput } from "@/components/form/TextInput";
 import { City } from "@/models/Address";
 import { CreatePost, createPost, listCities } from "@/services/postService";
-import { authCookieKey } from "@/utils/auth";
+import { getToken } from "@/utils/auth";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { parseCookies } from "nookies";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -120,7 +119,7 @@ const AddPost: React.FC<Props> = ({ cities }) => {
 export default AddPost;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const { [authCookieKey]: token } = parseCookies(ctx);
+  const token = getToken(ctx);
 
   if (!token) {
     return {

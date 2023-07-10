@@ -6,4 +6,5 @@ public class UserResponse
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string? Avatar { get; set; }
+    public string Role { get; set; } = null!;
 }
