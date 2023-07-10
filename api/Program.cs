@@ -3,6 +3,7 @@ using api.Data;
 using api.Repositories;
 using api.Services;
 using api.Settings;
+using api.Utils;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ var jwtKey = Encoding.ASCII.GetBytes(Settings.GetJwtKey());
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
@@ -95,6 +97,12 @@ app.UseStaticFiles(new StaticFileOptions { RequestPath = "/api/public" });
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    if (args.Length == 1 && args[0].ToLower() != "run")
+    {
+        var cli = new ProjectCommands(app);
+        cli.RunCommand(args[0].ToLower());
+        return;
+    }
     app.UseSwagger();
     app.UseSwaggerUI();
 }
