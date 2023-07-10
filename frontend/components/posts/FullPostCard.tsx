@@ -77,7 +77,7 @@ const FullPostCard = ({ post }: FullPostCardProps) => {
 
       <main>
         <figure>
-          <img src={"https://placehold.co/600X400"} alt="Album" />
+          <img src={post.image} alt={post.title} />
         </figure>
         <div className="my-2 flex flex-col gap-0.5 items-end">
           <p className="text-red-500 font-thin text-xs line-through">

@@ -4,6 +4,14 @@ import { Post } from "@/models/Post";
 import FullPostCard from "@/components/posts/FullPostCard";
 import { GetStaticProps } from "next";
 
+export default function Details({ post }: DetailsProps) {
+  return (
+    <div className="flex justify-center items-center">
+      <FullPostCard post={post} />
+    </div>
+  );
+}
+
 export const getStaticPaths = async () => {
   const { data: posts } = await api.get<Post[]>("/posts");
 
@@ -27,11 +35,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
 type DetailsProps = {
   post: Post;
 };
-
-export default function Details({ post }: DetailsProps) {
-  return (
-    <div className="flex justify-center items-center">
-      <FullPostCard post={post} />
-    </div>
-  );
-}
