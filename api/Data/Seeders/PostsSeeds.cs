@@ -66,6 +66,7 @@ public static class PostsSeeds
                 Image = defaultImageUrl,
             },
         };
+        posts.ForEach(post => post.Create());
         return posts;
     }
 }
