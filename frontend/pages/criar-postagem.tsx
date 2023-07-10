@@ -2,8 +2,8 @@ import { Title } from "@/components/Typograph/Title";
 import { Select } from "@/components/form/Select";
 import { TextInput } from "@/components/form/TextInput";
 import { City } from "@/models/Address";
-import { CreatePost, createPost, listCities } from "@/services/postService";
 import { getToken } from "@/utils/auth";
+import { CreatePostForm, createPost, listCities } from "@/services/postService";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
@@ -16,16 +16,14 @@ interface Props {
 }
 
 const AddPost: React.FC<Props> = ({ cities }) => {
-  const { register, handleSubmit } = useForm<CreatePost>();
+  const { register, handleSubmit } = useForm<CreatePostForm>();
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
-
-  const onSubmit = async (data: CreatePost) => {
+  const onSubmit = async (data: CreatePostForm) => {
     try {
       setIsCreating(true);
       await createPost({
         ...data,
-        address: data.address,
         oldPrice: data.oldPrice,
         promotionPrice: data.promotionPrice,
       });
@@ -58,7 +56,17 @@ const AddPost: React.FC<Props> = ({ cities }) => {
             {...register("description")}
             placeholder="Descreve a promoção"
             className="textarea textarea-bordered textarea-lg w-full md:h-full"
-          />
+          ></textarea>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              <span className="label-text">Foto do produto:</span>
+            </label>
+            <input
+              {...register("image")}
+              type="file"
+              className="file-input file-input-primary file-input-bordered w-full max-w-xs"
+            />
+          </div>
           <div className="flex gap-4">
             <TextInput
               type="number"

@@ -27,7 +27,7 @@ public class PostRepository
         return await _context.Posts
             .Include(p => p.Complaints)
             .Include(p => p.User)
-            .Include(p => p.Address)
+            .Include(p => p.Address.City)
             .AsNoTracking()
             .FirstOrDefaultAsync(post => post.Id == id);
     }
@@ -45,10 +45,9 @@ public class PostRepository
     public async Task<List<Post>> GetAllAsync(int? userId = null)
     {
         return await _context.Posts
-            .OrderByDescending(post => post.Id)
             .AsNoTracking()
-            .Include(p => p.Complaints)
             .OrderByDescending(post => post.Id)
+            .Include(p => p.Complaints)
             .Include(p => p.User)
             .Include(p => p.Address)
             .Where(p => userId == null || p.UserId == userId)

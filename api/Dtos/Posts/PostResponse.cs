@@ -14,6 +14,8 @@ public class PostResponse
     public int UserId { get; set; }
     public UserResponse? User { get; set; }
     public List<PostComplaintResponse> Complaints { get; set; } = null!;
+    public string Image { get; set; } = null!;
+
 }
 
 public class PostComplaintResponse

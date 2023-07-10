@@ -38,4 +38,5 @@ public class Post
     public DateTime UpdatedAt { get; set; }
     public Address Address { get; set; } = null!;
     public List<Complaint> Complaints { get; set; } = null!;
+    public string Image { get; set; } = null!;
 }

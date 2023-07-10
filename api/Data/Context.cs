@@ -18,7 +18,8 @@ public class Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().Property(p => p.Role).HasDefaultValue(RoleEnum.USER);
+        // modelBuilder.Entity<Post>().Property(p => p.Image).HasDefaultValue("");
+        modelBuilder.Entity<User>().Property(u => u.Role).HasDefaultValue(RoleEnum.USER);
         modelBuilder
             .Entity<User>()
             .Property(p => p.Role)

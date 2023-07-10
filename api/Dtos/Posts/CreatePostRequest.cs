@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using api.Models;
 
 namespace api.Dtos.Posts;
 
@@ -19,6 +18,7 @@ public class CreatePostRequest
     [Required]
     public decimal? PromotionPrice { get; set; } = null!;
     public CreateAddress Address { get; set; } = null!;
+    public IFormFile? Image { get; set; }
 }
 
 public class CreateAddress

@@ -18,7 +18,7 @@ public class PostController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<PostResponse>> CreateAsync([FromBody] CreatePostRequest newPost)
+    public async Task<ActionResult<PostResponse>> CreateAsync([FromForm] CreatePostRequest newPost)
     {
         try
         {
