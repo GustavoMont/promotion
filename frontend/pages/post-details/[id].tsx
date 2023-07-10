@@ -6,7 +6,6 @@ import FullPostCard from "@/components/posts/FullPostCard";
 export const getStaticPaths = async () => {
   const { data: posts } = await api.get<Post[]>("/posts");
 
-  console.log(posts);
 
   const paths = posts.map((post) => {
     return {
