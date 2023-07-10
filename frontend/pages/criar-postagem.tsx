@@ -22,7 +22,6 @@ const AddPost: React.FC<Props> = ({ cities }) => {
   const [isCreating, setIsCreating] = useState(false);
 
   const onSubmit = async (data: CreatePost) => {
-    console.log(data);
     try {
       setIsCreating(true);
       await createPost({
