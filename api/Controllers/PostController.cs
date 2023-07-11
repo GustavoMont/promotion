@@ -1,4 +1,5 @@
 using api.Dtos.Posts;
+using api.Exceptions;
 using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,5 +57,24 @@ public class PostController : ControllerBase
         {
             return BadRequest(new { message = error.Message });
         }
+    }
+
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteAsync([FromRoute] int id)
+    {
+      try
+      {
+        await _service.DeleteAsync(id);
+        return NoContent();
+      }
+            catch (NotFoundException err)
+      {
+        return NotFound(new { message = err.Message });
+      }
+      catch (ForbiddenException)
+      {
+        return Forbid();
+      }
     }
 }

@@ -22,13 +22,14 @@ public class PostRepository
         return newPost;
     }
 
-    public async Task<Post?> GetByIdAsync(int id)
+    public async Task<Post?> GetByIdAsync(int id, bool tracking = true)
     {
-        return await _context.Posts
-            .AsNoTracking()
+      var action = _context.Posts
             .Include(p => p.User)
-            .Include(p => p.Address.City)
-            .FirstOrDefaultAsync(post => post.Id == id);
+            .Include(p => p.Address.City);
+        return await (tracking ? action.FirstOrDefaultAsync(post => post.Id == id) : action
+            .AsNoTracking()
+            .FirstOrDefaultAsync(post => post.Id == id));
     }
 
     public async Task<List<Post>> GetAllAsync(int? userId = null)
@@ -40,5 +41,11 @@ public class PostRepository
             .Include(p => p.Address)
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task DeleteAsync(Post post)
+    {
+      _context.Posts.Remove(post);
+      await _context.SaveChangesAsync();
     }
 }
