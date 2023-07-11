@@ -30,12 +30,9 @@ builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CityRepository>();
 builder.Services.AddScoped<CityService>();
-<<<<<<< HEAD
 builder.Services.AddScoped<ComplaintRepository>();
 builder.Services.AddScoped<ComplaintService>();
-=======
 builder.Services.AddScoped<FileUploadService>();
->>>>>>> d8d5ca97229b5e3f9f0a9c7b7bcb66989c144add
 
 builder.Services.AddHttpContextAccessor();
 
