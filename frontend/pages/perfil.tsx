@@ -15,7 +15,7 @@ const MyPosts = ({ posts }: Props) => {
       <Title level="h2" className="mb-10 mt-10 text-center text-accent">
         Minhas publicações
       </Title>
-      <div className="gap-4 grid sm:grid-cols-2 lg:grid-cols-3">
+      <div className="gap-4 grid sm:grid-cols-2 lg:grid-cols-3 justify-center">
         {posts.map((post) => (
           <PersonalPosts post={post} key={post.id} />
         ))}

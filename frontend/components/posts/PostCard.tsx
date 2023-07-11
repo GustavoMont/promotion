@@ -12,7 +12,7 @@ export const PostCard: React.FC<Props> = ({ post }) => {
   return (
     <div className="p-4 card lg:card-side bg-base-100 shadow-xl rounded-t-lg border-t-8 border-t-primary ">
       <figure>
-        <img src={"https://placehold.co/600X400"} alt="Album" />
+        <img src={post.image} alt="Album" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{post.title}</h2>

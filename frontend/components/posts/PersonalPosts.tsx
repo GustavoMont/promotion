@@ -6,6 +6,7 @@ import EditPostModal from "./EditPostModal";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Title } from "../Typograph/Title";
 import { currencyFormatter } from "@/utils/formatter";
+import { differenceInDays, differenceInHours, parseISO } from "date-fns";
 
 type PersonalPostProps = {
   post: Post;
@@ -14,8 +15,20 @@ type PersonalPostProps = {
 const PersonalPosts = ({ post }: PersonalPostProps) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const days = differenceInDays(new Date(), parseISO(String(post.updatedAt)));
+  const hours = differenceInHours(new Date(), parseISO(String(post.updatedAt)));
+
+  // const formattedDate = formatDistance(
+  //   subDays(new Date(), post.updatedAt),
+  //   new Date(),
+  //   {
+  //     addSuffix: true,
+  //   }
+  // );
+
   return (
-    <div className="rounded-t-lg border-t-8 border-t-primary  p-4 rounded card-side bg-base-100       shadow-xl max-w-[400px] max-h-[400px] w-full h-full">
+    <div className="rounded-t-lg border-t-8 border-t-primary p-4 rounded card-side bg-base-100       shadow-xl max-w-[400px] max-h-[400px] w-full h-full">
       {showDeleteModal ? (
         <DeletePostModal setShowDeleteModal={setShowDeleteModal} />
       ) : null}
@@ -49,9 +62,13 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
                 {currencyFormatter(post.promotionPrice)}
               </p>
             </div>
-            <p className=" text-xs text-gray-600 flex items-end">
-              Postado à 3 dias
-            </p>
+            <div className=" text-xs text-gray-600 flex items-end">
+              {days > 0 ? (
+                <p>Postado à {days} dias atrás</p>
+              ) : (
+                <p>Postado à {hours} hora(s) atrás </p>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-center items-center gap-3">

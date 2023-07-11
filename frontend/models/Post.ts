@@ -2,7 +2,6 @@ import { Address } from "./Address";
 import { User } from "./User";
 
 export interface Post {
-  map(arg0: (post: any) => { params: { id: any } }): unknown;
   id: number;
   title: string;
   description: string;
@@ -12,4 +11,5 @@ export interface Post {
   userId: number;
   address: Address;
   user: User;
+  updatedAt: Date;
 }
