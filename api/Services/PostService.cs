@@ -1,4 +1,5 @@
 using api.Dtos.Posts;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 using Mapster;
@@ -38,16 +39,33 @@ public class PostService : BaseService
         var createdPost = await _repository.CreateAsync(post);
         return createdPost.Adapt<PostResponse>();
     }
+    private async Task<Post> GetPost(int id, bool tracking = true)
+    {
+              var post = await _repository.GetByIdAsync(id, tracking);
+        if (post == null)
+        {
+            throw new NotFoundException("Post não encontrado");
+        }
+        return post;
+    }
 
     public async Task<PostResponse> GetByIdAsync(int id)
     {
-        var post = await _repository.GetByIdAsync(id);
-        if (post == null)
-        {
-            throw new Exception("Post não encontrado");
-        }
+        var post = await GetPost(id);
         return post.Adapt<PostResponse>();
     }
+
+  public async Task DeleteAsync(int id)
+  {
+    var post = await GetPost(id);
+    var userId = GetCurrentUserId();
+    var userRole = GetUserRole(); 
+    if (post.UserId != userId && userRole != RoleEnum.ADMIN.ToString())
+    {
+       throw new ForbiddenException();
+    }
+    await _repository.DeleteAsync(post);
+  }
 
     public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
     {
