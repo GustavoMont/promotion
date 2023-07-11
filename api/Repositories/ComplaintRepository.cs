@@ -22,12 +22,20 @@ public class ComplaintRepository
         return complaint;
     }
 
-    public async Task<Complaint?> GetByIdAsync(int id)
+    public async Task<Complaint?> GetByIdAsync(int id, bool tracking = false)
     {
-        return await _context.Complaints
-            .Include(c => c.User)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var action = _context.Complaints.Include(c => c.User);
+        return await (
+            tracking
+                ? action.FirstOrDefaultAsync()
+                : (action.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id))
+        );
+    }
+
+    public async Task DeleteAsync(Complaint complaint)
+    {
+        _context.Complaints.Remove(complaint);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Complaint> CreateAsync(Complaint newComplaint)

@@ -6,6 +6,5 @@ public enum ReasonEnum
     FAKE_PROMOTION,
     SPAM,
     FRAUD,
-    HATE_SPEECH,
     OTHER
 }

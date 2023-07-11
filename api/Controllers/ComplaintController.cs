@@ -1,4 +1,5 @@
 using api.Dtos.Complaints;
+using api.Exceptions;
 using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,13 @@ public class ComplaintController : ControllerBase
         }
     }
 
+    [HttpGet("reason-types")]
+    [Authorize]
+    public ActionResult<List<ReasonTypeResponse>> ListReasonTypes()
+    {
+        return Ok(_service.ListReasonTypes());
+    }
+
     [HttpGet("{id:int}")]
     [ActionName(nameof(GetByIdAsync))]
     public async Task<ActionResult<ComplaintResponse>> GetByIdAsync([FromRoute] int id)
@@ -46,6 +54,25 @@ public class ComplaintController : ControllerBase
         catch (System.Exception err)
         {
             return BadRequest(new { message = err.Message });
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteAsync([FromRoute] int id)
+    {
+        try
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
         }
     }
 }

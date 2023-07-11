@@ -1,4 +1,5 @@
 using api.Dtos.Complaints;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 using Mapster;
@@ -40,13 +41,44 @@ public class ComplaintService : BaseService
         return createdComplaint.Adapt<ComplaintResponse>();
     }
 
-    public async Task<ComplaintResponse> GetByIdAsync(int id)
+    public List<ReasonTypeResponse> ListReasonTypes()
+    {
+        List<ReasonTypeResponse> reasons = new List<ReasonTypeResponse>
+        {
+            new ReasonTypeResponse
+            {
+                Name = "Nudez ou conetúdo pornográfico",
+                Reason = ReasonEnum.ADULT_CONTENT
+            },
+            new ReasonTypeResponse { Name = "Anuncio falso", Reason = ReasonEnum.FAKE_PROMOTION },
+            new ReasonTypeResponse { Name = "Golpe/Fraude", Reason = ReasonEnum.FRAUD },
+            new ReasonTypeResponse { Name = "Outro", Reason = ReasonEnum.OTHER },
+        };
+        return reasons;
+    }
+
+    private async Task<Complaint> GetComplaintAsync(int id, bool tracking = false)
     {
         var complaint = await _repository.GetByIdAsync(id);
         if (complaint == null)
         {
-            throw new Exception("Reclamação não encontrada");
+            throw new NotFoundException("Denúncia não encontrada");
         }
+
+        return complaint;
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var complaint = await GetComplaintAsync(id, true);
+        IsOwnerOrAdmin(complaint.UserId);
+        await _repository.DeleteAsync(complaint);
+    }
+
+    public async Task<ComplaintResponse> GetByIdAsync(int id)
+    {
+        var complaint = await GetComplaintAsync(id);
+
         return complaint.Adapt<ComplaintResponse>();
     }
 }
