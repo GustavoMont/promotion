@@ -18,7 +18,7 @@ public class PostController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<PostResponse>> CreateAsync([FromBody] CreatePostRequest newPost)
+    public async Task<ActionResult<PostResponse>> CreateAsync([FromForm] CreatePostRequest newPost)
     {
         try
         {
@@ -46,11 +46,11 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<PostResponse>>> GetAllAsync()
+    public async Task<ActionResult<List<PostResponse>>> GetAllAsync([FromQuery] int? userId)
     {
         try
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(userId));
         }
         catch (System.Exception error)
         {

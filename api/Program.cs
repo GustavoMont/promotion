@@ -1,9 +1,9 @@
 using System.Text;
-using api;
 using api.Data;
 using api.Repositories;
 using api.Services;
 using api.Settings;
+using api.Utils;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +12,18 @@ using Microsoft.OpenApi.Models;
 
 DotEnv.Load();
 
+if (!Directory.Exists("wwwroot"))
+{
+    Directory.CreateDirectory("wwwroot");
+    FileUploadService.LoadDefaultImage();
+}
+
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = Encoding.ASCII.GetBytes(Settings.GetJwtKey());
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddTransient<DataSeeder>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
@@ -24,6 +31,7 @@ builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CityRepository>();
 builder.Services.AddScoped<CityService>();
+builder.Services.AddScoped<FileUploadService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -115,9 +123,18 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions { RequestPath = "/api/public" });
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    if (args.Length == 1 && args[0].ToLower() != "run")
+    {
+        var cli = new ProjectCommands(app);
+        cli.RunCommand(args[0].ToLower());
+        return;
+    }
     app.UseSwagger();
     app.UseSwaggerUI();
 }

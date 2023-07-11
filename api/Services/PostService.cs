@@ -8,15 +8,18 @@ namespace api.Services;
 
 public class PostService : BaseService
 {
+    private readonly FileUploadService _fileUploadService;
     private readonly PostRepository _repository;
 
     public PostService(
         [FromServices] PostRepository repository,
-        [FromServices] IHttpContextAccessor httpContextAccessor
+        [FromServices] IHttpContextAccessor httpContextAccessor,
+        [FromServices] FileUploadService fileUploadService
     )
         : base(httpContextAccessor)
     {
         _repository = repository;
+        _fileUploadService = fileUploadService;
     }
 
     public async Task<PostResponse> CreateAsync(CreatePostRequest newPost)
@@ -24,6 +27,14 @@ public class PostService : BaseService
         var userId = GetCurrentUserId();
         var post = newPost.Adapt<Post>();
         post.UserId = userId;
+        if (newPost.Image != null)
+        {
+            post.Image = await _fileUploadService.UploadAsync(newPost.Image, "post");
+        }
+        else
+        {
+            post.Image = _fileUploadService.GetDefaultImageUrl("post");
+        }
         var createdPost = await _repository.CreateAsync(post);
         return createdPost.Adapt<PostResponse>();
     }
@@ -38,9 +49,9 @@ public class PostService : BaseService
         return post.Adapt<PostResponse>();
     }
 
-    public async Task<List<PostResponse>> GetAllAsync()
+    public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
     {
-        var posts = await _repository.GetAllAsync();
+        var posts = await _repository.GetAllAsync(userId);
         return posts.Adapt<List<PostResponse>>();
     }
 }

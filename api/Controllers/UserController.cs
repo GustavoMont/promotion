@@ -49,7 +49,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return StatusCode(201, await _service.CreateAsync(body));
+            return StatusCode(201, await _service.CreateAuthAsync(body));
         }
         catch (BadHttpRequestException err)
         {
@@ -74,18 +74,34 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("update-password")]
+    [HttpPut("{id:int}/password")]
     [Authorize]
-    public  ActionResult PutUpdate([FromBody] RequestUpdatePassword request)
+    public ActionResult PutUpdate([FromBody] RequestUpdatePassword request)
     {
         try
         {
-            _service.UpdatePassword(request); 
+            _service.UpdatePassword(request);
             return NoContent();
         }
-        catch(System.Exception e)
+        catch (System.Exception e)
         {
-            return BadRequest(); 
+            return BadRequest(new { message = e.Message });
+        }
+    }
+
+    [HttpPost("team")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<UserResponse>> CreateTeamUserAsync(
+        [FromBody] CreateTeamUserRequest body
+    )
+    {
+        try
+        {
+            return StatusCode(201, await _service.CreateTeamUserAsync(body));
+        }
+        catch (System.Exception err)
+        {
+            return BadRequest(new { message = err.Message });
         }
     }
 }
