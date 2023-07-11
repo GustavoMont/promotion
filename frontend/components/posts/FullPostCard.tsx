@@ -21,11 +21,11 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div>
-      <div className="flex flex-col p-2 gap-8 md:flex-row w-full h-full justify-center">
+    <div className="w-full max-w-[1000px] grid md:grid-cols-2 gap-3 justify-center items-center">
+      <div className="flex flex-col p-2 gap-8 w-full h-full">
         {showModal ? <ReportPostModal setShowModal={setShowModal} /> : null}
 
-        <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px]">
+        <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px] h-full">
           <div className="flex gap-2 items-center justify-between">
             {/* <div className="flex flex-col items-center gap-1">
             <img
@@ -44,9 +44,9 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
               <p className="text-xs italic">Denunciar</p>
             </div>
           </div>
-          <figure className="border-2 flex items-center justify-center">
+          <figure className="flex items-center justify-center">
             <img
-              className=" rounded "
+              className=" rounded max-w-[300px]"
               src={"https://placehold.co/600X400"}
               alt="Album"
             />
@@ -69,12 +69,11 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 bg-white  p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px]">
+        <div className="flex flex-col gap-4 bg-white p-4 shadow rounded-t-lg border-t-8 border-t-primary w-full max-w-[500px] h-full max-h-[500px]">
           <div>
             <Title>Mais informações</Title>
             <p>{post.description}</p>
           </div>
-
           <AddressCard address={post.address} />
         </div>
       </div>

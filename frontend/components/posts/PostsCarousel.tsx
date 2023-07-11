@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { Title } from "../Typograph/Title";
 import Link from "next/link";
 import { PostCard } from "./PostCard";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 type PostsCarouselProps = {
   posts: Post[];
@@ -19,22 +21,19 @@ const PostsCarousel = ({ posts }: PostsCarouselProps) => {
   }, []);
 
   return (
-    <div className="carousel carousel-center max-w-md p-4 space-x-4 bg-light-black rounded-box">
+    <Carousel
+      autoPlay
+      infiniteLoop
+      interval={2000}
+      swipeable
+      className="w-[370px] "
+    >
       {filteredPosts.map((post) => (
-        <div
-          key={post.id}
-          id={`post${post.id}`}
-          className="carousel-item flex flex-col gap-2 p-2 "
-        >
-          {/* <Link href={`/postagem-completa/${post.id}`}>
-            <Title className="text-white">{post.title}</Title>
-          </Link>
-
-          <img src={post.image} className="w-[200px] rounded" /> */}
+        <div key={post.id}>
           <PostCard post={post}></PostCard>
         </div>
       ))}
-    </div>
+    </Carousel>
   );
 };
 
