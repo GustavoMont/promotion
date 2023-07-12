@@ -19,14 +19,6 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
   const days = differenceInDays(new Date(), parseISO(String(post.updatedAt)));
   const hours = differenceInHours(new Date(), parseISO(String(post.updatedAt)));
 
-  // const formattedDate = formatDistance(
-  //   subDays(new Date(), post.updatedAt),
-  //   new Date(),
-  //   {
-  //     addSuffix: true,
-  //   }
-  // );
-
   return (
     <div className="rounded-t-lg border-t-8 border-t-primary p-4 rounded card-side bg-base-100       shadow-xl max-w-[400px] max-h-[400px] w-full h-full">
       {showDeleteModal ? (
@@ -44,9 +36,7 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
 
         <figure className="w-full flex items-center justify-center">
           <img
-            src={
-              "https://images.unsplash.com/photo-1661956602868-6ae368943878?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxMXx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-            }
+            src={post.image}
             alt="Post image"
             className="w-full max-h-[200px] rounded p-2"
           />
