@@ -46,8 +46,8 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
           </div>
           <figure className="flex items-center justify-center">
             <img
-              className=" rounded max-w-[300px]"
-              src={"https://placehold.co/600X400"}
+              className="rounded max-w-[300px] object-contain"
+              src={post.image}
               alt="Album"
             />
           </figure>

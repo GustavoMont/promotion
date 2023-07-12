@@ -37,22 +37,20 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
         <EditPostModal setShowEditModal={setShowEditModal} post={post} />
       ) : null}
 
-      <div>
-        <Title className="font-bold text-xl text-start underline">
+      <div className="flex flex-col">
+        <Title className="p-2 font-bold text-xl text-start hover:underline">
           {post.title}
         </Title>
 
-        <figure className="w-full flex items-center justify-center">
+        <figure className="w-full flex justify-center items-start">
           <img
-            src={
-              "https://images.unsplash.com/photo-1661956602868-6ae368943878?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxMXx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-            }
+            src={post.image}
             alt="Post image"
-            className="w-full max-h-[200px] rounded p-2"
+            className="w-full max-h-[200px] rounded p-2 object-fill"
           />
         </figure>
 
-        <div className="flex justify-between rounded-r-xl w-full p-2">
+        <div className="flex justify-between  rounded-r-xl w-full p-2">
           <div className="my-2 flex flex-col gap-2 justify-between items-start">
             <div className="flex flex-col gap-1">
               <p className="text-red-500 font-thin text-xs line-through">
