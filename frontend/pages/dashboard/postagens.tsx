@@ -1,3 +1,4 @@
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Table from "@/components/dashboard/Table";
 import api from "@/config/api";
 import { Post } from "@/models/Post";
@@ -10,9 +11,11 @@ type PostsProps = {
 
 export default function Posts({ posts }: PostsProps) {
   return (
-    <div>
-      <Table posts={posts} />
-    </div>
+    <DashboardLayout>
+      <div>
+        <Table posts={posts} />
+      </div>
+    </DashboardLayout>
   );
 }
 

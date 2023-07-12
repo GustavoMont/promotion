@@ -57,7 +57,7 @@ const AddPost: React.FC<Props> = ({ cities }) => {
             {...register("description")}
             placeholder="Descreve a promoção"
             className="textarea textarea-bordered textarea-lg w-full md:h-full"
-          ></textarea>
+          />
           <div className="form-control w-full max-w-xs">
             <label className="label">
               <span className="label-text">Foto do produto:</span>
