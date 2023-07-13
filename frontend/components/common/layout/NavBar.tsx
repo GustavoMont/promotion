@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Avatar } from "@/components/user/Avatar";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
+import { RoleEnum } from "@/models/User";
 
 interface Option {
   name: string;
@@ -14,9 +15,12 @@ interface Option {
 export const NavBar = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const isAdmin = user?.role === RoleEnum.ADMIN;
   const items: Option[] = [
     { name: "Ofertas recentes", href: "/" },
     { href: "/perfil", name: "Minhas publicações" },
+    { href: "/dashboard", name: "Dashboard", renderCondition: isAdmin },
+
     { href: "/", name: "Sair", onClick: logout, renderCondition: !!user },
     { href: "/login", name: "Fazer login", renderCondition: !user },
   ];

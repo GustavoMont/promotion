@@ -1,7 +1,8 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Table from "@/components/dashboard/Table";
-import api from "@/config/api";
 import { Post } from "@/models/Post";
+import { listMostComplaintsPosts } from "@/services/postService";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { GetServerSideProps } from "next";
 import React from "react";
 
@@ -12,15 +13,22 @@ type PostsProps = {
 export default function Posts({ posts }: PostsProps) {
   return (
     <DashboardLayout>
-      <div>
+      {posts.length ? (
         <Table posts={posts} />
-      </div>
+      ) : (
+        <div className="alert p-7">
+          <InformationCircleIcon className="w-8" />
+          <span className="text-2xl">Não há posts para avaliar.</span>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps<PostsProps> = async () => {
-  const { data: posts } = await api.get<Post[]>(`/posts`);
+export const getServerSideProps: GetServerSideProps<PostsProps> = async (
+  ctx
+) => {
+  const posts = await listMostComplaintsPosts(ctx);
 
   return { props: { posts } };
 };
