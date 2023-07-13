@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import api from "@/config/api";
 import { Post } from "@/models/Post";
 import FullPostCard from "@/components/posts/FullPostCard";
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { getToken } from "@/utils/auth";
+import { useRouter } from "next/router";
 
 type DetailsProps = {
   post: Post;
@@ -10,6 +12,14 @@ type DetailsProps = {
 };
 
 export default function Details({ post, posts }: DetailsProps) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!getToken()) {
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <div className="flex justify-center items-center">
       <FullPostCard post={post} posts={posts} />
@@ -17,7 +27,7 @@ export default function Details({ post, posts }: DetailsProps) {
   );
 }
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const { data: posts } = await api.get<Post[]>("/posts");
 
   const paths = posts.map((post) => {
@@ -35,5 +45,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id;
   const { data: post } = await api.get<Post>(`/posts/${id}`);
   const { data: posts } = await api.get<Post[]>(`/posts`);
+
   return { props: { post, posts } };
 };

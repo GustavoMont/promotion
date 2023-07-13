@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const login = async (data: Login) => {
     const { access } = await userLogin(data);
+    router.push("/");
     setUserByToken(access);
   };
   const logout = async () => {
