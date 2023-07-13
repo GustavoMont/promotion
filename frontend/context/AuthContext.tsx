@@ -31,7 +31,9 @@ const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const login = async (data: Login) => {
+    destroyToken();
     const { access } = await userLogin(data);
+    router.push("/");
     setUserByToken(access);
   };
   const logout = async () => {
@@ -51,8 +53,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   const setUserByToken = useCallback(async (token: string) => {
-    storeAccess(token);
-    setUser(await getCurrentUser());
+    try {
+      storeAccess(token);
+      setUser(await getCurrentUser());
+    } catch (error) {
+      /** */
+    }
   }, []);
 
   type SocialSignInUser = {
@@ -89,6 +95,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const googleSignIn = async () => {
     try {
+      destroyToken();
       const result = await signInWithPopup(auth, provider);
       GoogleAuthProvider.credentialFromResult(result);
       const token = await auth.currentUser?.getIdToken();

@@ -89,4 +89,17 @@ public class UserController : ControllerBase
             return BadRequest(new { message = err.Message });
         }
     }
+
+    [HttpGet]
+    public async Task<ActionResult<List<UserResponse>>> ListAsync([FromQuery] int? role)
+    {
+        try
+        {
+            return await _service.ListAsync(role);
+        }
+        catch (System.Exception err)
+        {
+            return BadRequest(new { message = err.Message });
+        }
+    }
 }

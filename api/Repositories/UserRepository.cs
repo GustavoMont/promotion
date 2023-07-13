@@ -30,4 +30,12 @@ public class UserRepository
     {
         return await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
     }
+
+    public async Task<List<User>> ListAsync(int? role)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(u => role != null ? (int?)u.Role == role : true)
+            .ToListAsync();
+    }
 }

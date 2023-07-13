@@ -1,4 +1,5 @@
 import { Address } from "./Address";
+import { Complaint } from "./Complaints";
 import { User } from "./User";
 
 export interface Post {
@@ -11,5 +12,6 @@ export interface Post {
   userId: number;
   address: Address;
   user: User;
+  complaints: Complaint[];
   updatedAt: Date;
 }

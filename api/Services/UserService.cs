@@ -98,4 +98,10 @@ public class UserService : BaseService
 
         return new GetOrCreateResponse(statusCode, _tokenService.GenerateToken(user));
     }
+
+    public async Task<List<UserResponse>> ListAsync(int? role = null)
+    {
+        var colaborators = await _repository.ListAsync(role);
+        return colaborators.Adapt<List<UserResponse>>();
+    }
 }
