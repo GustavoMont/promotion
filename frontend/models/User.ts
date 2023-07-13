@@ -15,3 +15,13 @@ export interface TokenUser {
   id: number;
   role: RoleEnum;
 }
+
+export enum RoleEnum {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
+
+export interface TokenUser {
+  id: number;
+  role: RoleEnum;
+}

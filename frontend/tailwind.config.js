@@ -33,6 +33,8 @@ module.exports = {
         "dark-secondary": "#867D4D",
         "light-black": "#323238",
         black: "#121214",
+        danger: "#DC3545",
+        "dark-danger": "#9d0909",
       },
     },
     screens: {

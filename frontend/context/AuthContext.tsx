@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const login = async (data: Login) => {
     destroyToken();
     const { access } = await userLogin(data);
+    router.push("/");
     setUserByToken(access);
   };
   const logout = async () => {

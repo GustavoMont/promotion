@@ -1,7 +1,7 @@
 import { classNameHandler } from "@/utils/styles";
 import React from "react";
 
-type color = "primary" | "secondary" | "neutral" | "none";
+type color = "primary" | "secondary" | "neutral" | "danger" | "none";
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -12,17 +12,11 @@ interface Props
   color?: color;
 }
 
-type colorButtonStylesType =
-  | `bg-${"primary" | "scondary" | "gray"} hover:${
-      | "bg-dark-primary"
-      | "bg-dark-gray"
-      | "bg-dark-scondary"} text-${"black" | "white"}`
-  | "";
-
-const colorButtonStyles: Record<color, colorButtonStylesType> = {
-  neutral: "bg-gray hover:bg-dark-gray text-black",
+const colorButtonStyles: Record<color, string> = {
+  neutral: "bg-neutral hover:bg-neutral-focus text-white",
   primary: "bg-primary hover:bg-dark-primary text-white",
   secondary: "bg-scondary hover:bg-dark-scondary text-black",
+  danger: "bg-danger hover:bg-dark-danger text-white",
   none: "",
 };
 

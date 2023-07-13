@@ -17,12 +17,9 @@ export const destroyToken = () => {
   destroyCookie(null, authCookieKey);
 };
 
-export const getTokenUser = (ctx: ctxType | null = null): UserToken | null => {
-  const token = getToken(ctx);
-  if (token) {
-    return jwtDecode<UserToken>(token);
-  }
-  return null;
+export const getUserToken = (token: string) => {
+  const user = jwtDecode<UserToken>(token);
+  return user || null;
 };
 
 export const getToken = (ctx: ctxType | null = null) => {
