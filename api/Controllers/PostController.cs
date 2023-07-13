@@ -59,6 +59,21 @@ public class PostController : ControllerBase
         }
     }
 
+    [HttpGet("complaints")]
+    [Authorize]
+    public async Task<ActionResult<List<PostResponse>>> ListComplaintedPostsAsync(
+        [FromQuery] int min = 5
+    )
+    {
+        try
+        {
+            return Ok(await _service.ListComplaintedPostsAsync(min));
+        }
+        catch (System.Exception error)
+        {
+            return BadRequest(new { message = error.Message });
+        }
+    }
     [HttpDelete("{id:int}")]
     [Authorize]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id)

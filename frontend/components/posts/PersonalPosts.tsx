@@ -3,7 +3,7 @@ import { Post } from "@/models/Post";
 import React, { useState } from "react";
 import DeletePostModal from "./DeletePostModal";
 import EditPostModal from "./EditPostModal";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { Title } from "../Typograph/Title";
 import { currencyFormatter } from "@/utils/formatter";
 import { differenceInDays, differenceInHours, parseISO } from "date-fns";
@@ -20,29 +20,24 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
   const hours = differenceInHours(new Date(), parseISO(String(post.updatedAt)));
 
   return (
-    <div className="rounded-t-lg border-t-8 border-t-primary p-4 rounded card-side bg-base-100       shadow-xl max-w-[400px] max-h-[400px] w-full h-full">
+    <div className="rounded-t-lg border-t-8 border-t-primary p-4 rounded card-side bg-base-100 shadow-xl max-w-[400px]  w-full h-full">
       {showDeleteModal ? (
-        <DeletePostModal setShowDeleteModal={setShowDeleteModal} />
+        <DeletePostModal post={post} setShowDeleteModal={setShowDeleteModal} />
       ) : null}
 
       {showEditModal ? (
         <EditPostModal setShowEditModal={setShowEditModal} post={post} />
       ) : null}
 
-      <div>
-        <Title className="font-bold text-xl text-start underline">
-          {post.title}
-        </Title>
+      <div className="flex flex-col gap-3">
+        <Title className="p-2 font-bold text-xl text-start">{post.title}</Title>
+        <div className="avatar">
+          <div className="w-full max-h-[500px] rounded-lg">
+            <img src={post.image} alt={post.title} />
+          </div>
+        </div>
 
-        <figure className="w-full flex items-center justify-center">
-          <img
-            src={post.image}
-            alt="Post image"
-            className="w-full max-h-[200px] rounded p-2"
-          />
-        </figure>
-
-        <div className="flex justify-between rounded-r-xl w-full p-2">
+        <div className="flex justify-between  rounded-r-xl w-full p-2">
           <div className="my-2 flex flex-col gap-2 justify-between items-start">
             <div className="flex flex-col gap-1">
               <p className="text-red-500 font-thin text-xs line-through">
@@ -62,7 +57,7 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
           </div>
 
           <div className="flex justify-center items-center gap-3">
-            <div
+            {/* <div
               className="hover:underline hover:text-yellow-500 hover:font-medium"
               onClick={() => setShowEditModal(true)}
             >
@@ -71,18 +66,18 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
                 className="h-10 w-10  font-medium p-1 rounded-md cursor-pointer"
               />
               <p className="text-xs">editar</p>
-            </div>
+            </div> */}
 
-            <div
+            <button
               onClick={() => setShowDeleteModal(true)}
-              className="hover:underline hover:text-danger hover:font-medium"
+              className="hover:underline hover:text-danger hover:font-medium cursor-pointer"
             >
               <TrashIcon
                 title="Excluir"
-                className="h-10 w-10font-medium p-1 rounded-md  cursor-pointer "
+                className="h-10 w-10font-medium p-1 rounded-md"
               />
               <p className="text-xs">excluir</p>
-            </div>
+            </button>
           </div>
         </div>
       </div>

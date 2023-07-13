@@ -25,21 +25,32 @@ public class PostRepository
     public async Task<Post?> GetByIdAsync(int id, bool tracking = true)
     {
       var action = _context.Posts
-            .Include(p => p.User)
+            .Include(p => p.User).Include(p => p.Complaints)
             .Include(p => p.Address.City);
         return await (tracking ? action.FirstOrDefaultAsync(post => post.Id == id) : action
             .AsNoTracking()
             .FirstOrDefaultAsync(post => post.Id == id));
     }
 
+    public async Task<List<Post>> ListComplaintedPostsAsync(int min = 5)
+    {
+        return await _context.Posts
+            .AsNoTracking()
+            .Where(p => p.Complaints.Count >= min)
+            .OrderByDescending(p => p.Complaints.Count)
+            .Include(p => p.Complaints)
+            .ToListAsync();
+    }
+
     public async Task<List<Post>> GetAllAsync(int? userId = null)
     {
         return await _context.Posts
-            .Where(p => userId == null || p.UserId == userId)
+            .AsNoTracking()
             .OrderByDescending(post => post.Id)
+            .Include(p => p.Complaints)
             .Include(p => p.User)
             .Include(p => p.Address)
-            .AsNoTracking()
+            .Where(p => userId == null || p.UserId == userId)
             .ToListAsync();
     }
 

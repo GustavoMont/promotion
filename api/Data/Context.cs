@@ -14,6 +14,7 @@ public class Context : DbContext
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<City> Cities { get; set; } = null!;
     public DbSet<Address> Addresses { get; set; } = null!;
+    public DbSet<Complaint> Complaints { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

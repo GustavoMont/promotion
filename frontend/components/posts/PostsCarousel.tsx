@@ -2,8 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Post } from "@/models/Post";
 import React, { useEffect, useState } from "react";
-import { Title } from "../Typograph/Title";
-import Link from "next/link";
 import { PostCard } from "./PostCard";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -18,7 +16,7 @@ const PostsCarousel = ({ posts }: PostsCarouselProps) => {
   useEffect(() => {
     const filteredPosts = posts.slice(0, 3);
     setFilteredPosts(filteredPosts);
-  }, []);
+  }, [posts]);
 
   return (
     <Carousel
@@ -29,9 +27,7 @@ const PostsCarousel = ({ posts }: PostsCarouselProps) => {
       className="w-[370px] "
     >
       {filteredPosts.map((post) => (
-        <div key={post.id}>
-          <PostCard post={post}></PostCard>
-        </div>
+        <PostCard key={post.id} post={post}></PostCard>
       ))}
     </Carousel>
   );

@@ -55,6 +55,11 @@ public class PostService : BaseService
         return post.Adapt<PostResponse>();
     }
 
+    public async Task<List<PostResponse>> ListComplaintedPostsAsync(int min = 5)
+    {
+        var posts = await _repository.ListComplaintedPostsAsync(min);
+        return posts.Adapt<List<PostResponse>>();
+    }
   public async Task DeleteAsync(int id)
   {
     var post = await GetPost(id);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -10,9 +11,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230709011251_CreateComplaints")]
+    partial class CreateComplaints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,10 +126,6 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<decimal>("OldPrice")
                         .HasColumnType("decimal(65,30)");
 
@@ -186,17 +185,6 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin@admin.com",
-                            LastName = "Souza",
-                            Name = "Adminelson",
-                            Password = "$2a$11$ePiiKeK/cRLJXM.4Uykh0OPsztsxzF035piZZVyDDhaxDbRCNyc2.",
-                            Role = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("api.Models.Address", b =>

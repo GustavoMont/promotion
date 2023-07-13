@@ -10,18 +10,11 @@ interface Props
   > {
   rounded?: boolean;
   color?: color;
+  isLoading?: boolean;
 }
 
-type colorButtonStylesType =
-  | `bg-${"primary" | "scondary" | "danger" | "gray"} hover:${
-      | "bg-dark-primary"
-      | "bg-dark-gray"
-      | "bg-dark-danger"
-      | "bg-dark-scondary"} text-${"black" | "white"}`
-  | "";
-
-const colorButtonStyles: Record<color, colorButtonStylesType> = {
-  neutral: "bg-gray hover:bg-dark-gray text-black",
+const colorButtonStyles: Record<color, string> = {
+  neutral: "bg-neutral hover:bg-neutral-focus text-white",
   primary: "bg-primary hover:bg-dark-primary text-white",
   secondary: "bg-scondary hover:bg-dark-scondary text-black",
   danger: "bg-danger hover:bg-dark-danger text-white",
@@ -33,6 +26,7 @@ export const Button: React.FC<Props> = ({
   rounded = false,
   color = "primary",
   className,
+  isLoading,
   ...props
 }) => {
   return (
@@ -43,6 +37,7 @@ export const Button: React.FC<Props> = ({
         "rounded-full"
       )}  ${colorButtonStyles[color]}`}
     >
+      {isLoading ? <span className="loading loading-spinner"></span> : null}
       {children}
     </button>
   );
