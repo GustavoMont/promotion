@@ -10,6 +10,7 @@ interface Props
   > {
   rounded?: boolean;
   color?: color;
+  isLoading?: boolean;
 }
 
 const colorButtonStyles: Record<color, string> = {
@@ -25,6 +26,7 @@ export const Button: React.FC<Props> = ({
   rounded = false,
   color = "primary",
   className,
+  isLoading,
   ...props
 }) => {
   return (
@@ -35,6 +37,7 @@ export const Button: React.FC<Props> = ({
         "rounded-full"
       )}  ${colorButtonStyles[color]}`}
     >
+      {isLoading ? <span className="loading loading-spinner"></span> : null}
       {children}
     </button>
   );

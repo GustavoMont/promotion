@@ -1,21 +1,15 @@
 import { Title } from "@/components/Typograph/Title";
 import { PostCard } from "@/components/posts/PostCard";
-import { ComplaintPostsList } from "@/components/posts/admin/ComplaintPostsList";
-import api, { serverSideAPi } from "@/config/api";
-import { useAuth } from "@/context/AuthContext";
+import api from "@/config/api";
 import { Post } from "@/models/Post";
-import { RoleEnum } from "@/models/User";
-import { getTokenUser } from "@/utils/auth";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 interface Props {
   posts: Post[];
-  complaintedPosts?: Post[];
 }
 
-export default function Home({ posts, complaintedPosts }: Props) {
-  const { user } = useAuth();
+export default function Home({ posts }: Props) {
   return (
     <>
       <Head>
@@ -25,33 +19,20 @@ export default function Home({ posts, complaintedPosts }: Props) {
         <Title level="h2" className="mb-10 text-center text-accent">
           Confira todas as ofertas!
         </Title>
-        <section className="flex gap-5">
-          <div className="flex flex-col gap-5 md:grid md:grid-cols-2 2xl:grid-cols-3">
+        <section className="flex gap-5 justify-center">
+          <div className="flex flex-col gap-5 md:grid md:grid-cols-2 2xl:grid-cols-4">
             {posts.map((post) => (
               <PostCard post={post} key={post.id} />
             ))}
           </div>
-          {user?.role === RoleEnum.ADMIN ? (
-            <aside>
-              <ComplaintPostsList posts={complaintedPosts} />
-            </aside>
-          ) : null}
         </section>
       </main>
     </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const { data: posts } = await api.get<Post[]>(`/posts`);
-  const user = getTokenUser(ctx);
-
-  if (user?.role === RoleEnum.ADMIN) {
-    const { data: complaintedPosts } = await serverSideAPi(ctx).get<Post[]>(
-      "/posts/complaints?min=5"
-    );
-    return { props: { posts, complaintedPosts } };
-  }
 
   return { props: { posts } };
 };

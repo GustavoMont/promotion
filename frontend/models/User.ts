@@ -1,9 +1,5 @@
-export enum RoleEnum {
-  USER = "USER",
-  ADMIN = "ADMIN",
-}
-
 export interface User {
+  id: number;
   name: string;
   lastName: string;
   email: string;
