@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "../common/Button";
+import { deletePost } from "@/services/postService";
+import { Post } from "@/models/Post";
+import { toast } from "react-toastify";
 
 type DeletePostModalProps = {
   setShowDeleteModal: (value: boolean) => void;
+  post: Post;
 };
 
-const DeletePostModal = ({ setShowDeleteModal }: DeletePostModalProps) => {
+const DeletePostModal = ({
+  setShowDeleteModal,
+  post,
+}: DeletePostModalProps) => {
   const resetModalState = () => {
     setShowDeleteModal(false);
   };
 
-  const handleDeleteClick = () => {
-    resetModalState();
+  const handleDeleteClick = async () => {
+    try {
+      await deletePost(post.id);
+      toast.success("Post excluído");
+      resetModalState();
+    } catch (error) {
+      toast.error("Erro ao excluir publicação");
+    }
   };
   const handleCancelClick = () => {
     resetModalState();
@@ -25,20 +38,20 @@ const DeletePostModal = ({ setShowDeleteModal }: DeletePostModalProps) => {
         >
           ✕
         </button>
-        <h3 className="font-bold text-lg">
+        <h3 className="font-bold text-xl text-center text-red-500">
           Cuidado! Essa ação é irreversível.
         </h3>
         <p className="py-4">
           Tem certeza que deseja excluir{" "}
-          <span className="text-red-500 font-semibold">permanentemente</span> a
+          <span className="text-red-700 font-semibold">permanentemente</span> a
           postagem?
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-end">
+          <Button color="neutral" onClick={handleCancelClick} rounded>
+            Cancelar
+          </Button>
           <Button onClick={handleDeleteClick} color="danger" rounded>
             Excluir
-          </Button>
-          <Button onClick={handleCancelClick} rounded>
-            Cancelar
           </Button>
         </div>
       </form>

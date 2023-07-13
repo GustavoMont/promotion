@@ -38,3 +38,13 @@ export const createPost = async ({ image: file, ...body }: CreatePostForm) => {
   );
   return post;
 };
+
+export const listPostsByUser = async (userId: number, ctx?: ctxType) => {
+  const requester = ctx ? serverSideAPi(ctx) : api;
+  const { data } = await requester.get<Post[]>(`/posts/?userId=${userId}`);
+  return data;
+};
+
+export const deletePost = async (postId: number) => {
+  await api.delete(`posts/${postId}`);
+};
