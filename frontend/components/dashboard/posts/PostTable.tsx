@@ -6,7 +6,7 @@ type TableProps = {
   posts: Post[];
 };
 
-const Table = ({ posts }: TableProps) => {
+export const PostTable = ({ posts }: TableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra">
@@ -37,5 +37,3 @@ const Table = ({ posts }: TableProps) => {
     </div>
   );
 };
-
-export default Table;

@@ -1,5 +1,5 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Table from "@/components/dashboard/Table";
+import { PostTable } from "@/components/dashboard/posts/PostTable";
 import { Post } from "@/models/Post";
 import { listMostComplaintsPosts } from "@/services/postService";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
@@ -14,7 +14,7 @@ export default function Posts({ posts }: PostsProps) {
   return (
     <DashboardLayout>
       {posts.length ? (
-        <Table posts={posts} />
+        <PostTable posts={posts} />
       ) : (
         <div className="alert p-7">
           <InformationCircleIcon className="w-8" />

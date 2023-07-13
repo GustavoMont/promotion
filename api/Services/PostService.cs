@@ -39,9 +39,10 @@ public class PostService : BaseService
         var createdPost = await _repository.CreateAsync(post);
         return createdPost.Adapt<PostResponse>();
     }
+
     private async Task<Post> GetPost(int id, bool tracking = true)
     {
-              var post = await _repository.GetByIdAsync(id, tracking);
+        var post = await _repository.GetByIdAsync(id, tracking);
         if (post == null)
         {
             throw new NotFoundException("Post não encontrado");
@@ -60,17 +61,18 @@ public class PostService : BaseService
         var posts = await _repository.ListComplaintedPostsAsync(min);
         return posts.Adapt<List<PostResponse>>();
     }
-  public async Task DeleteAsync(int id)
-  {
-    var post = await GetPost(id);
-    var userId = GetCurrentUserId();
-    var userRole = GetUserRole(); 
-    if (post.UserId != userId && userRole != RoleEnum.ADMIN.ToString())
+
+    public async Task DeleteAsync(int id)
     {
-       throw new ForbiddenException();
+        var post = await GetPost(id);
+        var userId = GetCurrentUserId();
+        var userRole = GetUserRole();
+        if (post.UserId != userId && userRole != RoleEnum.ADMIN.ToString())
+        {
+            throw new ForbiddenException();
+        }
+        await _repository.DeleteAsync(post);
     }
-    await _repository.DeleteAsync(post);
-  }
 
     public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
     {
