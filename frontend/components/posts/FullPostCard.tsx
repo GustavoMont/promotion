@@ -7,16 +7,15 @@ import ReportPostModal from "./ReportPostModal";
 import { FlagIcon } from "@heroicons/react/24/outline";
 import { FlagIcon as SolidFlagIcon } from "@heroicons/react/24/solid";
 import { Title } from "../Typograph/Title";
-import PostsCarousel from "./PostsCarousel";
 import { useAuth } from "@/context/AuthContext";
 import { deleteComplaint } from "@/services/complaintService";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FullPostCardProps = {
   post: Post;
-  posts: Post[];
 };
 
-const FullPostCard = ({ post, posts }: FullPostCardProps) => {
+const FullPostCard = ({ post }: FullPostCardProps) => {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
   const userComplaint = post.complaints.find(
@@ -29,9 +28,11 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
   ) : (
     <FlagIcon className="w-6" />
   );
+  const queryClient = useQueryClient();
   const handleClickComplaint = async () => {
     if (userHasComplainted) {
       await deleteComplaint(userComplaint.id);
+      queryClient.invalidateQueries(["post", post.id.toString()]);
     } else {
       openComplaintModal();
     }
@@ -92,11 +93,6 @@ const FullPostCard = ({ post, posts }: FullPostCardProps) => {
           </div>
           <AddressCard address={post.address} />
         </div>
-      </div>
-
-      <div className="w-full flex flex-col mt-4 items-center justify-center">
-        <Title className="text-primary">Outras promoções</Title>
-        <PostsCarousel posts={posts} />
       </div>
     </div>
   );

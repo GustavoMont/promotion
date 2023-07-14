@@ -54,3 +54,15 @@ export const listMostComplaintsPosts = async (ctx: ctxType | null = null) => {
 export const deletePost = async (postId: number) => {
   await api.delete(`posts/${postId}`);
 };
+
+export const getPost = async (postId: number, ctx?: ctxType) => {
+  const requester = ctx ? serverSideAPi(ctx) : api;
+  const { data: post } = await requester.get<Post>(`/posts/${postId}`);
+  return post;
+};
+
+export const listPosts = async (ctx?: ctxType) => {
+  const requester = ctx ? serverSideAPi(ctx) : api;
+  const { data: posts } = await requester.get<Post[]>("/posts");
+  return posts;
+};

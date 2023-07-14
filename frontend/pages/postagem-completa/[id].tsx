@@ -5,14 +5,17 @@ import FullPostCard from "@/components/posts/FullPostCard";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getToken } from "@/utils/auth";
 import { useRouter } from "next/router";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { getPost, listPosts } from "@/services/postService";
+import PostsCarousel from "@/components/posts/PostsCarousel";
 
-type DetailsProps = {
-  post: Post;
-  posts: Post[];
-};
-
-export default function Details({ post, posts }: DetailsProps) {
+export default function Details() {
   const router = useRouter();
+  const postId = router.query.id;
+  const { data: post, isLoading } = useQuery(["post", postId], () =>
+    getPost(+(postId || 0))
+  );
+  const { data: posts } = useQuery(["posts"], () => listPosts());
 
   useEffect(() => {
     if (!getToken()) {
@@ -22,7 +25,16 @@ export default function Details({ post, posts }: DetailsProps) {
 
   return (
     <div className="flex justify-center items-center">
-      <FullPostCard post={post} posts={posts} />
+      {isLoading && (
+        <>
+          <span className="loading loading-ring loading-xs"></span>
+          <span className="loading loading-ring loading-sm"></span>
+          <span className="loading loading-ring loading-md"></span>
+          <span className="loading loading-ring loading-lg"></span>
+        </>
+      )}
+      {post && <FullPostCard post={post} />}
+      {posts && <PostsCarousel posts={posts} />}
     </div>
   );
 }
@@ -36,15 +48,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
   return {
-    paths: paths,
-    fallback: false,
+    paths,
+    fallback: true,
   };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id;
-  const { data: post } = await api.get<Post>(`/posts/${id}`);
-  const { data: posts } = await api.get<Post[]>(`/posts`);
 
-  return { props: { post, posts } };
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(
+    ["post"],
+    async () => await api.get<Post>(`/posts/${id}`)
+  );
+  await queryClient.prefetchQuery(
+    ["posts"],
+    async () => await api.get<Post[]>(`/posts`)
+  );
+
+  return {
+    props: {},
+  };
 };

@@ -4,11 +4,16 @@ import { initializeApp } from "firebase/app";
 
 import { Poppins } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import { NextPage } from "next";
 import { Layout } from "@/components/common/layout/Layout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -36,12 +41,17 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>);
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <AuthProvider>
-      <main className={poppins.className}>
-        {getLayout(<Component {...pageProps} />)}
-        <ToastContainer />
-      </main>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <AuthProvider>
+          <main className={poppins.className}>
+            {getLayout(<Component {...pageProps} />)}
+            <ToastContainer />
+          </main>
+        </AuthProvider>
+      </Hydrate>
+    </QueryClientProvider>
   );
 }

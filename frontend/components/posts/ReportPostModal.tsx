@@ -8,6 +8,7 @@ import { Post } from "@/models/Post";
 import { CreateComplaint, createComplaint } from "@/services/complaintService";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type ReportPostModalProps = {
   setShowModal: (value: boolean) => void;
@@ -19,8 +20,7 @@ export default function ReportPostModal({
   post,
 }: ReportPostModalProps) {
   const [reasonTypes, setReasonTypes] = useState<Reason[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm<CreateComplaint>({
     defaultValues: {
       postId: post.id,
@@ -28,17 +28,17 @@ export default function ReportPostModal({
   });
 
   const onSubmit = async (data: CreateComplaint) => {
-    try {
-      setIsLoading(true);
-      await createComplaint(data);
-      setIsLoading(false);
-      handleCancelReport();
-    } catch (error: unknown) {
-      const apiError = error as AxiosError<{ message: string }>;
-      setIsLoading(false);
-      toast.error(apiError.response?.data?.message ?? "Ocorreu um erro");
-    }
+    await createComplaint(data);
   };
+  const { mutate, isLoading } = useMutation(handleSubmit(onSubmit), {
+    onSuccess() {
+      handleCancelReport();
+      return queryClient.invalidateQueries(["post", post.id.toString()]);
+    },
+    onError(error: AxiosError<{ message: string }>) {
+      toast.error(error.response?.data?.message ?? "Ocorreu um erro");
+    },
+  });
 
   const handleCancelReport = () => {
     reset();
@@ -66,7 +66,7 @@ export default function ReportPostModal({
       <form
         method="dialog"
         className="modal-box flex flex-col "
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={mutate}
       >
         <button
           onClick={handleCancelReport}
