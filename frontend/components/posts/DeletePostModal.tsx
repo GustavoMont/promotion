@@ -3,6 +3,7 @@ import { Button } from "../common/Button";
 import { deletePost } from "@/services/postService";
 import { Post } from "@/models/Post";
 import { toast } from "react-toastify";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type DeletePostModalProps = {
   setShowDeleteModal: (value: boolean) => void;
@@ -16,16 +17,19 @@ const DeletePostModal = ({
   const resetModalState = () => {
     setShowDeleteModal(false);
   };
+  const queryClient = useQueryClient();
 
-  const handleDeleteClick = async () => {
-    try {
-      await deletePost(post.id);
+  const { mutate: handleDeleteClick, isLoading } = useMutation(deletePost, {
+    onSuccess() {
       toast.success("Post excluído");
       resetModalState();
-    } catch (error) {
+      return queryClient.invalidateQueries(["profile-posts", post.userId]);
+    },
+    onError() {
       toast.error("Erro ao excluir publicação");
-    }
-  };
+    },
+  });
+
   const handleCancelClick = () => {
     resetModalState();
   };
@@ -50,7 +54,12 @@ const DeletePostModal = ({
           <Button color="neutral" onClick={handleCancelClick} rounded>
             Cancelar
           </Button>
-          <Button onClick={handleDeleteClick} color="danger" rounded>
+          <Button
+            isLoading={isLoading}
+            onClick={() => handleDeleteClick(post.id)}
+            color="danger"
+            rounded
+          >
             Excluir
           </Button>
         </div>

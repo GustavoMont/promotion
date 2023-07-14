@@ -57,17 +57,6 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
           </div>
 
           <div className="flex justify-center items-center gap-3">
-            {/* <div
-              className="hover:underline hover:text-yellow-500 hover:font-medium"
-              onClick={() => setShowEditModal(true)}
-            >
-              <PencilSquareIcon
-                title="Editar"
-                className="h-10 w-10  font-medium p-1 rounded-md cursor-pointer"
-              />
-              <p className="text-xs">editar</p>
-            </div> */}
-
             <button
               onClick={() => setShowDeleteModal(true)}
               className="hover:underline hover:text-danger hover:font-medium cursor-pointer"
