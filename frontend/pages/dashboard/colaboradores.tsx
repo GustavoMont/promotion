@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { GetServerSideProps } from "next";
 import { getToken, getUserToken } from "@/utils/auth";
-import { CreateColaborator, listColaborators } from "@/services/userService";
-import { User } from "@/models/User";
+import {
+  CreateColaborator,
+  createColaborator,
+  listColaborators,
+} from "@/services/userService";
 import { ColaboratorTable } from "@/components/dashboard/colaborators/ColaboratorTable";
 import { useAuth } from "@/context/AuthContext";
 import { Alert } from "@/components/common/Alert";
@@ -12,26 +15,59 @@ import { Collapse } from "@/components/common/Collapse";
 import { TextInput } from "@/components/form/TextInput";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/common/Button";
+import {
+  QueryClient,
+  dehydrate,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { DeletUserModal } from "@/components/dashboard/users/DeletUserModal";
+import { User } from "@/models/User";
 
-interface Props {
-  colaborators: User[];
-}
-
-const Colaboradores: React.FC<Props> = ({ colaborators }) => {
+const Colaboradores: React.FC = () => {
   const { user } = useAuth();
-  const othersColaborators = colaborators.filter(({ id }) => id != user?.id);
+  const { data: colaborators } = useQuery(["colaborators"], () =>
+    listColaborators()
+  );
+  const othersColaborators = colaborators?.filter(({ id }) => id != user?.id);
   const { register, handleSubmit } = useForm<CreateColaborator>({
     defaultValues: {
       role: 1,
     },
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const onSubmit = async (body: CreateColaborator) => {
-    console.log(body);
+  useEffect(() => {
+    if (!isModalOpen) {
+      setSelectedUser(null);
+    }
+  }, [isModalOpen]);
+
+  const closeModal = () => setIsModalOpen(false);
+  const onClickDelete = (user: User) => {
+    setIsModalOpen(true);
+    setSelectedUser(user);
   };
+  const queryClient = useQueryClient();
+
+  const { mutate: onSubmit } = useMutation(handleSubmit(createColaborator), {
+    onSuccess() {
+      toast.success("Colaborador adicionado com sucesso");
+      return queryClient.invalidateQueries(["colaborators"]);
+    },
+    onError() {
+      toast.error("Ocorreu um erro ao adicionar um usuário");
+    },
+  });
 
   return (
     <DashboardLayout>
+      {isModalOpen && selectedUser ? (
+        <DeletUserModal user={selectedUser} handleCancelClick={closeModal} />
+      ) : null}
       <div className="flex flex-col gap-5">
         <div className="self-end">
           <Collapse
@@ -39,10 +75,7 @@ const Colaboradores: React.FC<Props> = ({ colaborators }) => {
             title="Adicionar colaborador"
           >
             <div className="divider"></div>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-3"
-            >
+            <form onSubmit={onSubmit} className="flex flex-col gap-3">
               <TextInput
                 register={register("name")}
                 label="Nome:"
@@ -65,7 +98,7 @@ const Colaboradores: React.FC<Props> = ({ colaborators }) => {
                 isPassword
               />
               <TextInput
-                register={register("password")}
+                register={register("confirmPassword")}
                 label="Confirmar senha:"
                 placeholder="confirmar enha..."
                 isPassword
@@ -76,8 +109,11 @@ const Colaboradores: React.FC<Props> = ({ colaborators }) => {
             </form>
           </Collapse>
         </div>
-        {othersColaborators.length ? (
-          <ColaboratorTable colaborators={othersColaborators} />
+        {othersColaborators?.length ? (
+          <ColaboratorTable
+            onClickDelete={onClickDelete}
+            colaborators={othersColaborators}
+          />
         ) : (
           <Alert
             content="Não há outros colaboradores"
@@ -89,7 +125,7 @@ const Colaboradores: React.FC<Props> = ({ colaborators }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const token = getToken(ctx);
   const redirectResponse = {
     redirect: {
@@ -104,8 +140,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   if (!user) {
     return redirectResponse;
   }
-  const colaborators = await listColaborators(ctx);
-  return { props: { colaborators } };
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(["colaborators"], () =>
+    listColaborators(ctx)
+  );
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 };
 
 export default Colaboradores;

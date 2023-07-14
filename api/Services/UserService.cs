@@ -1,5 +1,6 @@
 using api.Dtos.Auth;
 using api.Dtos.User;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 using Mapster;
@@ -38,17 +39,23 @@ public class UserService : BaseService
         return new TokenResponse(_tokenService.GenerateToken(user));
     }
 
-    public async Task<UserResponse> GetMe()
+    private async Task<User?> GetById(int id, bool tracking = true)
     {
-        return await GetById(GetCurrentUserId());
+        var user = await _repository.GetById(id, tracking);
+        return user;
     }
 
-    public async Task<UserResponse> GetById(int id)
+    public async Task<UserResponse> GetMe()
     {
-        var user = await _repository.GetById(id);
+        return await GetUser(GetCurrentUserId());
+    }
+
+    public async Task<UserResponse> GetUser(int id)
+    {
+        var user = await _repository.GetById(id, false);
         if (user is null)
         {
-            throw new Exception("Usuário não encontrado");
+            throw new NotFoundException("Usuário não encontrado");
         }
         return user.Adapt<UserResponse>();
     }
@@ -103,5 +110,17 @@ public class UserService : BaseService
     {
         var colaborators = await _repository.ListAsync(role);
         return colaborators.Adapt<List<UserResponse>>();
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var user = await GetById(id);
+        if (user == null)
+        {
+            throw new NotFoundException("Usuário não encontradp");
+        }
+        IsOwnerOrAdmin(user.Id);
+
+        await _repository.DeleteAsync(user);
     }
 }

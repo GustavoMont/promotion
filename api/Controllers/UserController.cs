@@ -1,5 +1,6 @@
 using api.Dtos.Auth;
 using api.Dtos.User;
+using api.Exceptions;
 using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +101,20 @@ public class UserController : ControllerBase
         catch (System.Exception err)
         {
             return BadRequest(new { message = err.Message });
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteAsync([FromRoute] int id)
+    {
+        try
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
         }
     }
 }

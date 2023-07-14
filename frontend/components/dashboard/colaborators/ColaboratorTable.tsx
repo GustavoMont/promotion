@@ -1,12 +1,17 @@
+import { Button } from "@/components/common/Button";
 import { User } from "@/models/User";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
 interface Props {
   colaborators: User[];
+  onClickDelete(user: User): void;
 }
 
-export const ColaboratorTable: React.FC<Props> = ({ colaborators }) => {
+export const ColaboratorTable: React.FC<Props> = ({
+  colaborators,
+  onClickDelete,
+}) => {
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra">
@@ -27,7 +32,9 @@ export const ColaboratorTable: React.FC<Props> = ({ colaborators }) => {
               <td>{colaborator.role.toLocaleLowerCase()}</td>
 
               <td>
-                <TrashIcon className="text-danger w-[24px] h-[24px]" />
+                <Button onClick={() => onClickDelete(colaborator)} color="none">
+                  <TrashIcon className="text-danger w-[24px] h-[24px]" />
+                </Button>
               </td>
             </tr>
           ))}

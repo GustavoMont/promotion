@@ -26,9 +26,14 @@ public class UserRepository
         return newUser;
     }
 
-    public async Task<User?> GetById(int id)
+    public async Task<User?> GetById(int id, bool tracking = true)
     {
-        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
+        var userDb = _context.Users;
+        return await (
+            tracking
+                ? userDb.FirstOrDefaultAsync(user => user.Id == id)
+                : userDb.AsNoTracking().FirstOrDefaultAsync(user => user.Id == id)
+        );
     }
 
     public async Task<List<User>> ListAsync(int? role)
@@ -37,5 +42,11 @@ public class UserRepository
             .AsNoTracking()
             .Where(u => role != null ? (int?)u.Role == role : true)
             .ToListAsync();
+    }
+
+    public async Task DeleteAsync(User user)
+    {
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
     }
 }

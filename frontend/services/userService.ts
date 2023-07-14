@@ -35,12 +35,16 @@ export const createColaborator = async (body: CreateColaborator) => {
   return data;
 };
 
+export const deleteUser = async (userId: number) => {
+  await api.delete(`users/${userId}`);
+};
+
 export const getCurrentUser = async () => {
   const { data: user } = await api.get<User>("/users/me");
   return user;
 };
 
-export const listColaborators = async (ctx: ctxType | null = null) => {
+export const listColaborators = async (ctx?: ctxType) => {
   const requester = ctx ? serverSideAPi(ctx) : api;
   const { data } = await requester.get<User[]>("/users?role=1");
   return data;
