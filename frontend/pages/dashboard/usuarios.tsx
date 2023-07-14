@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { Alert } from "@/components/common/Alert";
+import { Button } from "@/components/common/Button";
+import { Collapse } from "@/components/common/Collapse";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { GetServerSideProps } from "next";
-import { getToken, getUserToken } from "@/utils/auth";
+import { DeletUserModal } from "@/components/dashboard/users/DeletUserModal";
+import { UserTable } from "@/components/dashboard/users/UserTable";
+import { TextInput } from "@/components/form/TextInput";
+import { User } from "@/models/User";
 import {
   CreateUser,
-  createColaborator,
+  createUser,
   listColaborators,
+  listUsers,
 } from "@/services/userService";
-import { useAuth } from "@/context/AuthContext";
-import { Alert } from "@/components/common/Alert";
+import { getToken, getUserToken } from "@/utils/auth";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { Collapse } from "@/components/common/Collapse";
-import { TextInput } from "@/components/form/TextInput";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/common/Button";
 import {
   QueryClient,
   dehydrate,
@@ -21,48 +21,35 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { GetServerSideProps } from "next";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { DeletUserModal } from "@/components/dashboard/users/DeletUserModal";
-import { User } from "@/models/User";
-import { UserTable } from "@/components/dashboard/users/UserTable";
 
-const Colaboradores: React.FC = () => {
-  const { user } = useAuth();
-  const { data: colaborators } = useQuery(["colaborators"], () =>
-    listColaborators()
-  );
-  const othersColaborators = colaborators?.filter(({ id }) => id != user?.id);
-  const { register, handleSubmit } = useForm<CreateUser>({
-    defaultValues: {
-      role: 1,
-    },
-  });
+const Usuarios = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    if (!isModalOpen) {
-      setSelectedUser(null);
-    }
-  }, [isModalOpen]);
-
+  const { data: users } = useQuery(["users"], () => listUsers());
+  const { register, handleSubmit } = useForm<CreateUser>({
+    defaultValues: {
+      role: 0,
+    },
+  });
+  const queryClient = useQueryClient();
+  const { mutate: onSubmit } = useMutation(handleSubmit(createUser), {
+    onSuccess() {
+      toast.success("Usuário criado com sucesso");
+      return queryClient.invalidateQueries(["usuarios"]);
+    },
+    onError() {
+      toast.error("Erro ao criar usuário");
+    },
+  });
   const closeModal = () => setIsModalOpen(false);
   const onClickDelete = (user: User) => {
     setIsModalOpen(true);
     setSelectedUser(user);
   };
-  const queryClient = useQueryClient();
-
-  const { mutate: onSubmit } = useMutation(handleSubmit(createColaborator), {
-    onSuccess() {
-      toast.success("Colaborador adicionado com sucesso");
-      return queryClient.invalidateQueries(["colaborators"]);
-    },
-    onError() {
-      toast.error("Ocorreu um erro ao adicionar um usuário");
-    },
-  });
-
   return (
     <DashboardLayout>
       {isModalOpen && selectedUser ? (
@@ -72,7 +59,7 @@ const Colaboradores: React.FC = () => {
         <div className="self-end">
           <Collapse
             className="self-end border border-emerald-700"
-            title="Adicionar colaborador"
+            title="Adicionar usuário"
           >
             <div className="divider"></div>
             <form onSubmit={onSubmit} className="flex flex-col gap-3">
@@ -104,19 +91,16 @@ const Colaboradores: React.FC = () => {
                 isPassword
               />
               <Button type="submit" className="mt-4">
-                Criar colaborador
+                Criar usuário
               </Button>
             </form>
           </Collapse>
         </div>
-        {othersColaborators?.length ? (
-          <UserTable
-            onClickDelete={onClickDelete}
-            colaborators={othersColaborators}
-          />
+        {users?.length ? (
+          <UserTable onClickDelete={onClickDelete} colaborators={users} />
         ) : (
           <Alert
-            content="Não há outros colaboradores"
+            content="Não há usuários"
             icon={<InformationCircleIcon className="w-8" />}
           />
         )}
@@ -142,9 +126,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery(["colaborators"], () =>
-    listColaborators(ctx)
-  );
+  await queryClient.prefetchQuery(["users"], () => listColaborators(ctx));
 
   return {
     props: {
@@ -153,4 +135,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default Colaboradores;
+export default Usuarios;

@@ -17,7 +17,7 @@ export const login = async ({ email, password }: Login) => {
   return data;
 };
 
-export interface CreateColaborator {
+export interface CreateUser {
   name: string;
   lastName: string;
   password: string;
@@ -26,13 +26,17 @@ export interface CreateColaborator {
   role: number;
 }
 
-export const createColaborator = async (body: CreateColaborator) => {
-  const { data } = await api.post<
-    unknown,
-    AxiosResponse<User>,
-    CreateColaborator
-  >("/users/team", body);
+export const createColaborator = async (body: CreateUser) => {
+  const { data } = await api.post<unknown, AxiosResponse<User>, CreateUser>(
+    "/users/team",
+    body
+  );
   return data;
+};
+
+export const createUser = async (body: CreateUser) => {
+  const { data: user } = await api.post(`/users`, body);
+  return user;
 };
 
 export const deleteUser = async (userId: number) => {
@@ -47,5 +51,11 @@ export const getCurrentUser = async () => {
 export const listColaborators = async (ctx?: ctxType) => {
   const requester = ctx ? serverSideAPi(ctx) : api;
   const { data } = await requester.get<User[]>("/users?role=1");
+  return data;
+};
+
+export const listUsers = async (ctx?: ctxType) => {
+  const requester = ctx ? serverSideAPi(ctx) : api;
+  const { data } = await requester.get<User[]>("/users?role=0");
   return data;
 };

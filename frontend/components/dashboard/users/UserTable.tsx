@@ -8,10 +8,7 @@ interface Props {
   onClickDelete(user: User): void;
 }
 
-export const ColaboratorTable: React.FC<Props> = ({
-  colaborators,
-  onClickDelete,
-}) => {
+export const UserTable: React.FC<Props> = ({ colaborators, onClickDelete }) => {
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra">
@@ -20,6 +17,7 @@ export const ColaboratorTable: React.FC<Props> = ({
           <tr>
             <th></th>
             <th>Nome</th>
+            <th>Sobrenome</th>
             <th>Cargo</th>
             <th></th>
           </tr>
@@ -29,6 +27,8 @@ export const ColaboratorTable: React.FC<Props> = ({
             <tr key={colaborator.id}>
               <th>{colaborator.id}</th>
               <td>{colaborator.name}</td>
+              <td>{colaborator.lastName}</td>
+
               <td>{colaborator.role.toLocaleLowerCase()}</td>
 
               <td>
