@@ -18,11 +18,13 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "react-toastify";
 
 interface AuthContextProps {
   login(data: Login): Promise<void>;
   logout(): void;
   googleSignIn(): Promise<void>;
+  setUser(user: User): void;
   user: User | null;
 }
 
@@ -31,10 +33,14 @@ const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const login = async (data: Login) => {
-    destroyToken();
-    const { access } = await userLogin(data);
-    router.push("/");
-    setUserByToken(access);
+    try {
+      destroyToken();
+      const { access } = await userLogin(data);
+      router.push("/");
+      setUserByToken(access);
+    } catch (error) {
+      toast.error("Usuário ou senha incorretos");
+    }
   };
   const logout = async () => {
     setUser(null);
@@ -42,6 +48,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     onSignIn();
   };
   const [user, setUser] = useState<User | null>(null);
+  const updateUser = (user: User) => setUser(user);
 
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
@@ -118,7 +125,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, [setUserByToken]);
 
   return (
-    <AuthContext.Provider value={{ logout, googleSignIn, user, login }}>
+    <AuthContext.Provider
+      value={{ logout, googleSignIn, user, login, setUser: updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

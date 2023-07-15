@@ -12,16 +12,19 @@ public class UserService : BaseService
 {
     private readonly UserRepository _repository;
     private readonly TokenService _tokenService;
+    private readonly FileUploadService _fileUploadService;
 
     public UserService(
         [FromServices] UserRepository repository,
         [FromServices] TokenService tokenService,
-        [FromServices] IHttpContextAccessor httpContextAccessor
+        [FromServices] IHttpContextAccessor httpContextAccessor,
+        [FromServices] FileUploadService fileUploadService
     )
         : base(httpContextAccessor)
     {
         _repository = repository;
         _tokenService = tokenService;
+        _fileUploadService = fileUploadService;
     }
 
     public async Task<TokenResponse> LoginAsync(LoginRequest body)
@@ -39,7 +42,7 @@ public class UserService : BaseService
         return new TokenResponse(_tokenService.GenerateToken(user));
     }
 
-    private async Task<User?> GetById(int id, bool tracking = true)
+    private async Task<User?> GetByIdAsync(int id, bool tracking = true)
     {
         var user = await _repository.GetById(id, tracking);
         return user;
@@ -112,9 +115,27 @@ public class UserService : BaseService
         return colaborators.Adapt<List<UserResponse>>();
     }
 
+    public async Task<UserResponse> UpdateAsync(int id, UpdateUserRequest body)
+    {
+        var user = await GetByIdAsync(id);
+        if (user == null)
+        {
+            throw new NotFoundException("Usuário não encontrado");
+        }
+        IsOwnerOrAdmin(user.Id);
+        var updates = body.Adapt(user);
+        if (body?.Avatar != null)
+        {
+            user.Avatar = await _fileUploadService.UploadAsync(body.Avatar, "user");
+        }
+        await _repository.UpdateAsync();
+        var updatedUser = await GetUser(id);
+        return updatedUser;
+    }
+
     public async Task DeleteAsync(int id)
     {
-        var user = await GetById(id);
+        var user = await GetByIdAsync(id);
         if (user == null)
         {
             throw new NotFoundException("Usuário não encontradp");
@@ -122,5 +143,25 @@ public class UserService : BaseService
         IsOwnerOrAdmin(user.Id);
 
         await _repository.DeleteAsync(user);
+    }
+
+    public async Task UpdatePasswordAsync(int id, UpdatePasswordRequest body)
+    {
+        var user = await GetByIdAsync(id);
+        if (user == null)
+        {
+            throw new NotFoundException("Usuário não encontradp");
+        }
+        IsOwnerOrAdmin(user.Id);
+        if (body.Password != body.ConfirmPassword)
+        {
+            throw new BadHttpRequestException("As senhas não coincidem");
+        }
+        if (!BCrypt.Net.BCrypt.Verify(body.OldPassword, user?.Password))
+        {
+            throw new BadHttpRequestException("Senha incorreta");
+        }
+        var updates = body.Adapt(user);
+        await _repository.UpdateAsync();
     }
 }

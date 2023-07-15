@@ -104,7 +104,55 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPut("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult<UserResponse>> UpdateAsync(
+        [FromRoute] int id,
+        [FromForm] UpdateUserRequest body
+    )
+    {
+        try
+        {
+            return Ok(await _service.UpdateAsync(id, body));
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
+    }
+
+    [HttpPatch("{id:int}/change-password")]
+    [Authorize]
+    public async Task<ActionResult> UpdatePasswordAsync(
+        [FromRoute] int id,
+        [FromBody] UpdatePasswordRequest body
+    )
+    {
+        try
+        {
+            await _service.UpdatePasswordAsync(id, body);
+            return NoContent();
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
+        catch (BadHttpRequestException err)
+        {
+            return BadRequest(new { message = err.Message });
+        }
+    }
+
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id)
     {
         try

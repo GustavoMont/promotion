@@ -39,6 +39,49 @@ export const createUser = async (body: CreateUser) => {
   return user;
 };
 
+type UpdateUser = Omit<
+  User,
+  "email" | "password" | "role" | "avatar" | "id"
+> & {
+  avatar: File | null;
+};
+
+export type UpdateUserFrom = Omit<UpdateUser, "avatar"> & {
+  avatar: FileList;
+};
+
+export const updateUser = async (
+  userId: number,
+  { avatar: fileList, ...body }: UpdateUserFrom
+) => {
+  const avatar = fileList.item(0);
+  const { data: user } = await api.put<
+    unknown,
+    AxiosResponse<User>,
+    UpdateUser
+  >(
+    `/users/${userId}`,
+    { ...body, avatar },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return user;
+};
+
+export type UpdatePassword = Pick<
+  CreateUser,
+  "password" | "confirmPassword"
+> & {
+  oldPassword: string;
+};
+
+export const updatePassword = async (id: number, body: UpdatePassword) => {
+  await api.patch(`/users/${id}/change-password`, body);
+};
+
 export const deleteUser = async (userId: number) => {
   await api.delete(`users/${userId}`);
 };

@@ -49,4 +49,9 @@ public class UserRepository
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 }
