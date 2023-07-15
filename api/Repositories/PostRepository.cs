@@ -47,15 +47,21 @@ public class PostRepository
             .ToListAsync();
     }
 
-    public async Task<List<Post>> GetAllAsync(int? userId = null)
+    public async Task<List<Post>> GetAllAsync(
+        int? userId = null,
+        int? cityId = null,
+        string? orderBy = null
+    )
     {
         return await _context.Posts
             .AsNoTracking()
-            .OrderByDescending(post => post.Id)
+            .OrderBy(p => orderBy == "less_complaints" ? p.Complaints.Count : 0)
+            .ThenByDescending(post => post.Id)
             .Include(p => p.Complaints)
             .Include(p => p.User)
-            .Include(p => p.Address)
+            .Include(p => p.Address.City)
             .Where(p => userId == null || p.UserId == userId)
+            .Where(p => cityId == null || p.Address.CityId == cityId)
             .ToListAsync();
     }
 

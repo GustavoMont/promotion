@@ -83,8 +83,27 @@ export const getPost = async (postId: number, ctx?: ctxType) => {
   return post;
 };
 
-export const listPosts = async (ctx?: ctxType) => {
+const toQueryParams = <T extends object>(obj: T): string => {
+  const filterEntries = Object.entries(obj);
+  const query = filterEntries.reduce((prev, [key, value], i) => {
+    if (typeof value === "undefined") {
+      return "";
+    }
+    const query = `${key}=${value}`;
+    return i === 0 || prev[0] !== "?" ? `?${query}` : `${prev}&${query}`;
+  }, "");
+  return query;
+};
+
+export interface ListPostFilters {
+  city?: string;
+  orderBy?: "less_complaints" | "recents";
+}
+
+export const listPosts = async (filters?: ListPostFilters, ctx?: ctxType) => {
   const requester = ctx ? serverSideAPi(ctx) : api;
-  const { data: posts } = await requester.get<Post[]>("/posts");
+  const { data: posts } = await requester.get<Post[]>(
+    `/posts${filters ? toQueryParams<ListPostFilters>(filters) : ""}`
+  );
   return posts;
 };

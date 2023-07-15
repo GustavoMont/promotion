@@ -74,9 +74,13 @@ public class PostService : BaseService
         await _repository.DeleteAsync(post);
     }
 
-    public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
+    public async Task<List<PostResponse>> GetAllAsync(
+        int? userId = null,
+        int? cityId = null,
+        string? orderBy = null
+    )
     {
-        var posts = await _repository.GetAllAsync(userId);
+        var posts = await _repository.GetAllAsync(userId, cityId, orderBy);
         return posts.Adapt<List<PostResponse>>();
     }
 

@@ -47,11 +47,15 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<PostResponse>>> GetAllAsync([FromQuery] int? userId)
+    public async Task<ActionResult<List<PostResponse>>> GetAllAsync(
+        [FromQuery] int? userId,
+        [FromQuery] int? city,
+        [FromQuery] string? orderBy
+    )
     {
         try
         {
-            return Ok(await _service.GetAllAsync(userId));
+            return Ok(await _service.GetAllAsync(userId, city, orderBy));
         }
         catch (System.Exception error)
         {
