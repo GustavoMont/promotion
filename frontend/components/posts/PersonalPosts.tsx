@@ -3,7 +3,7 @@ import { Post } from "@/models/Post";
 import React, { useState } from "react";
 import DeletePostModal from "./DeletePostModal";
 import EditPostModal from "./EditPostModal";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Title } from "../Typograph/Title";
 import { currencyFormatter } from "@/utils/formatter";
 import { differenceInDays, differenceInHours, parseISO } from "date-fns";
@@ -57,6 +57,16 @@ const PersonalPosts = ({ post }: PersonalPostProps) => {
           </div>
 
           <div className="flex justify-center items-center gap-3">
+            <button
+              className="hover:underline hover:text-yellow-500 hover:font-medium"
+              onClick={() => setShowEditModal(true)}
+            >
+              <PencilSquareIcon
+                title="Editar"
+                className="h-10 w-10  font-medium p-1 rounded-md cursor-pointer"
+              />
+              <p className="text-xs">editar</p>
+            </button>
             <button
               onClick={() => setShowDeleteModal(true)}
               className="hover:underline hover:text-danger hover:font-medium cursor-pointer"

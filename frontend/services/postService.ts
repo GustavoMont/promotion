@@ -17,6 +17,28 @@ export const listCities = async (ctx: ctxType | null = null) => {
   return cities;
 };
 
+export const updatePost = async (
+  postId: number,
+  { image: fileList, ...body }: CreatePostForm
+) => {
+  console.log(body);
+
+  const image = fileList?.item(0);
+  const { data } = await api.put<unknown, AxiosResponse<Post>, CreatePost>(
+    `/posts/${postId}`,
+    {
+      ...body,
+      image,
+    },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return data;
+};
+
 export const createPost = async ({ image: file, ...body }: CreatePostForm) => {
   const image = file.item(0);
 

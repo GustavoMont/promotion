@@ -74,22 +74,44 @@ public class PostController : ControllerBase
             return BadRequest(new { message = error.Message });
         }
     }
+
+    [HttpPut("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult<PostResponse>> UpdateAsync(
+        [FromRoute] int id,
+        [FromForm] UpdatePostRequest body
+    )
+    {
+        try
+        {
+            return Ok(await _service.UpdateAsync(id, body));
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
+    }
+
     [HttpDelete("{id:int}")]
     [Authorize]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id)
     {
-      try
-      {
-        await _service.DeleteAsync(id);
-        return NoContent();
-      }
-            catch (NotFoundException err)
-      {
-        return NotFound(new { message = err.Message });
-      }
-      catch (ForbiddenException)
-      {
-        return Forbid();
-      }
+        try
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
     }
 }
