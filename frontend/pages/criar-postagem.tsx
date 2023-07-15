@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { FileInput } from "@/components/form/FileInput";
 
 interface Props {
   cities: City[];
@@ -57,16 +58,7 @@ const AddPost: React.FC<Props> = ({ cities }) => {
             placeholder="Descreve a promoção"
             className="textarea textarea-bordered textarea-lg w-full md:h-full"
           />
-          <div className="form-control w-full max-w-xs">
-            <label className="label">
-              <span className="label-text">Foto do produto:</span>
-            </label>
-            <input
-              {...register("image")}
-              type="file"
-              className="file-input file-input-primary file-input-bordered w-full max-w-xs"
-            />
-          </div>
+          <FileInput label="Foto do produto" register={register("image")} />
           <div className="flex gap-4">
             <TextInput
               type="number"

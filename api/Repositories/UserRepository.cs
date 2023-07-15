@@ -1,5 +1,6 @@
 using api.Data;
 using api.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,6 +48,11 @@ public class UserRepository
     public async Task DeleteAsync(User user)
     {
         _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync()
+    {
         await _context.SaveChangesAsync();
     }
 }

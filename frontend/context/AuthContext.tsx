@@ -23,6 +23,7 @@ interface AuthContextProps {
   login(data: Login): Promise<void>;
   logout(): void;
   googleSignIn(): Promise<void>;
+  setUser(user: User): void;
   user: User | null;
 }
 
@@ -42,6 +43,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     onSignIn();
   };
   const [user, setUser] = useState<User | null>(null);
+  const updateUser = (user: User) => setUser(user);
 
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
@@ -118,7 +120,9 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, [setUserByToken]);
 
   return (
-    <AuthContext.Provider value={{ logout, googleSignIn, user, login }}>
+    <AuthContext.Provider
+      value={{ logout, googleSignIn, user, login, setUser: updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

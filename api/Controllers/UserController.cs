@@ -104,6 +104,27 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPut("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult<UserResponse>> UpdateAsync(
+        [FromRoute] int id,
+        [FromForm] UpdateUserRequest body
+    )
+    {
+        try
+        {
+            return Ok(await _service.UpdateAsync(id, body));
+        }
+        catch (NotFoundException err)
+        {
+            return NotFound(new { message = err.Message });
+        }
+        catch (ForbiddenException)
+        {
+            return Forbid();
+        }
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id)
     {

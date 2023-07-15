@@ -12,16 +12,19 @@ public class UserService : BaseService
 {
     private readonly UserRepository _repository;
     private readonly TokenService _tokenService;
+    private readonly FileUploadService _fileUploadService;
 
     public UserService(
         [FromServices] UserRepository repository,
         [FromServices] TokenService tokenService,
-        [FromServices] IHttpContextAccessor httpContextAccessor
+        [FromServices] IHttpContextAccessor httpContextAccessor,
+        [FromServices] FileUploadService fileUploadService
     )
         : base(httpContextAccessor)
     {
         _repository = repository;
         _tokenService = tokenService;
+        _fileUploadService = fileUploadService;
     }
 
     public async Task<TokenResponse> LoginAsync(LoginRequest body)
@@ -110,6 +113,24 @@ public class UserService : BaseService
     {
         var colaborators = await _repository.ListAsync(role);
         return colaborators.Adapt<List<UserResponse>>();
+    }
+
+    public async Task<UserResponse> UpdateAsync(int id, UpdateUserRequest body)
+    {
+        var user = await GetById(id);
+        if (user == null)
+        {
+            throw new NotFoundException("Usuário não encontrado");
+        }
+        IsOwnerOrAdmin(user.Id);
+        var updates = body.Adapt(user);
+        if (body?.Avatar != null)
+        {
+            user.Avatar = await _fileUploadService.UploadAsync(body.Avatar, "user");
+        }
+        await _repository.UpdateAsync();
+        var updatedUser = await GetUser(id);
+        return updatedUser;
     }
 
     public async Task DeleteAsync(int id)
