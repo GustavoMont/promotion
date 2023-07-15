@@ -42,6 +42,8 @@ public class PostRepository
             .Where(p => p.Complaints.Count >= min)
             .OrderByDescending(p => p.Complaints.Count)
             .Include(p => p.Complaints)
+            .Include(p => p.User)
+            .Include(p => p.Address.City)
             .ToListAsync();
     }
 

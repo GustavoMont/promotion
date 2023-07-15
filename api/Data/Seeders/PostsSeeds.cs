@@ -41,6 +41,44 @@ public static class PostsSeeds
                 PromotionPrice = 157,
                 UserId = 5,
                 Image = defaultImageUrl,
+                Complaints = new List<Complaint>
+                {
+                    new Complaint
+                    {
+                        Id = 1,
+                        PostId = 3,
+                        UserId = 1,
+                        Reason = ReasonEnum.SPAM
+                    },
+                    new Complaint
+                    {
+                        Id = 2,
+                        PostId = 3,
+                        UserId = 2,
+                        Reason = ReasonEnum.OTHER
+                    },
+                    new Complaint
+                    {
+                        Id = 3,
+                        PostId = 3,
+                        UserId = 3,
+                        Reason = ReasonEnum.SPAM
+                    },
+                    new Complaint
+                    {
+                        Id = 4,
+                        PostId = 3,
+                        UserId = 4,
+                        Reason = ReasonEnum.SPAM
+                    },
+                    new Complaint
+                    {
+                        Id = 5,
+                        PostId = 3,
+                        UserId = 6,
+                        Reason = ReasonEnum.SPAM
+                    },
+                }
             },
             new Post
             {

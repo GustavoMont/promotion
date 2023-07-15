@@ -13,6 +13,8 @@ type PostsProps = {
 };
 
 export default function Posts({ posts }: PostsProps) {
+  console.log(posts);
+
   return (
     <DashboardLayout>
       {posts.length ? (
