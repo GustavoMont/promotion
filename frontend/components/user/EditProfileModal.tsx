@@ -8,6 +8,7 @@ import { TextInput } from "../form/TextInput";
 import { FileInput } from "../form/FileInput";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
+import { UpdatePasswordColapse } from "./UpdatePasswordColapse";
 
 interface Props {
   handleCancelClick(): void;
@@ -66,6 +67,8 @@ export const EditProfileModal: React.FC<Props> = ({
           <TextInput label="Sobrenome:" register={register("lastName")} />
           <FileInput register={register("avatar")} label="Foto de perfil" />
         </div>
+
+        <UpdatePasswordColapse user={user} />
 
         <div className="flex gap-2 mt-5 justify-end">
           <Button color="neutral" onClick={handleCancelClick} rounded>

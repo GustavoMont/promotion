@@ -10,6 +10,7 @@ interface Props
   icon?: JSX.Element;
   register?: UseFormRegisterReturn;
   isPassword?: boolean;
+  helpText?: string;
 }
 
 export const TextInput: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const TextInput: React.FC<Props> = ({
   icon,
   isPassword,
   register,
+  helpText,
   ...props
 }) => {
   return (
@@ -45,6 +47,11 @@ export const TextInput: React.FC<Props> = ({
         } bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
         {...register}
       />
+      {helpText ? (
+        <label className="label">
+          <span className="label-text-alt">{helpText}</span>
+        </label>
+      ) : null}
     </div>
   );
 };

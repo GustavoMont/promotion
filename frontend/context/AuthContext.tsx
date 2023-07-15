@@ -18,6 +18,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "react-toastify";
 
 interface AuthContextProps {
   login(data: Login): Promise<void>;
@@ -32,10 +33,14 @@ const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
   const login = async (data: Login) => {
-    destroyToken();
-    const { access } = await userLogin(data);
-    router.push("/");
-    setUserByToken(access);
+    try {
+      destroyToken();
+      const { access } = await userLogin(data);
+      router.push("/");
+      setUserByToken(access);
+    } catch (error) {
+      toast.error("Usuário ou senha incorretos");
+    }
   };
   const logout = async () => {
     setUser(null);

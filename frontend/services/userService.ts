@@ -71,6 +71,17 @@ export const updateUser = async (
   return user;
 };
 
+export type UpdatePassword = Pick<
+  CreateUser,
+  "password" | "confirmPassword"
+> & {
+  oldPassword: string;
+};
+
+export const updatePassword = async (id: number, body: UpdatePassword) => {
+  await api.patch(`/users/${id}/change-password`, body);
+};
+
 export const deleteUser = async (userId: number) => {
   await api.delete(`users/${userId}`);
 };
