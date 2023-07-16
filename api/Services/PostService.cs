@@ -74,9 +74,33 @@ public class PostService : BaseService
         await _repository.DeleteAsync(post);
     }
 
-    public async Task<List<PostResponse>> GetAllAsync(int? userId = null)
+    public async Task<List<PostResponse>> GetAllAsync(
+        int? userId = null,
+        int? cityId = null,
+        string? orderBy = null
+    )
     {
-        var posts = await _repository.GetAllAsync(userId);
+        var posts = await _repository.GetAllAsync(userId, cityId, orderBy);
         return posts.Adapt<List<PostResponse>>();
+    }
+
+    public async Task<PostResponse> UpdateAsync(int id, UpdatePostRequest body)
+    {
+        var post = await GetPost(id);
+        if (post == null)
+        {
+            throw new NotFoundException("Post não encontrado");
+        }
+        IsOwnerOrAdmin(post.UserId);
+        var image = post.Image;
+        if (body.Image != null)
+        {
+            image = await _fileUploadService.UploadAsync(body.Image, "post");
+        }
+        post.Update();
+        var updates = body.Adapt(post);
+        updates.Image = image;
+        await _repository.UpdateAsync();
+        return await GetByIdAsync(id);
     }
 }

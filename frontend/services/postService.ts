@@ -17,6 +17,28 @@ export const listCities = async (ctx: ctxType | null = null) => {
   return cities;
 };
 
+export const updatePost = async (
+  postId: number,
+  { image: fileList, ...body }: CreatePostForm
+) => {
+  console.log(body);
+
+  const image = fileList?.item(0);
+  const { data } = await api.put<unknown, AxiosResponse<Post>, CreatePost>(
+    `/posts/${postId}`,
+    {
+      ...body,
+      image,
+    },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return data;
+};
+
 export const createPost = async ({ image: file, ...body }: CreatePostForm) => {
   const image = file.item(0);
 
@@ -61,8 +83,27 @@ export const getPost = async (postId: number, ctx?: ctxType) => {
   return post;
 };
 
-export const listPosts = async (ctx?: ctxType) => {
+const toQueryParams = <T extends object>(obj: T): string => {
+  const filterEntries = Object.entries(obj);
+  const query = filterEntries.reduce((prev, [key, value], i) => {
+    if (typeof value === "undefined") {
+      return "";
+    }
+    const query = `${key}=${value}`;
+    return i === 0 || prev[0] !== "?" ? `?${query}` : `${prev}&${query}`;
+  }, "");
+  return query;
+};
+
+export interface ListPostFilters {
+  city?: string;
+  orderBy?: "less_complaints" | "recents";
+}
+
+export const listPosts = async (filters?: ListPostFilters, ctx?: ctxType) => {
   const requester = ctx ? serverSideAPi(ctx) : api;
-  const { data: posts } = await requester.get<Post[]>("/posts");
+  const { data: posts } = await requester.get<Post[]>(
+    `/posts${filters ? toQueryParams<ListPostFilters>(filters) : ""}`
+  );
   return posts;
 };

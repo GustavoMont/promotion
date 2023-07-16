@@ -3,6 +3,11 @@ import { Button } from "../common/Button";
 import { Post } from "@/models/Post";
 import Label from "../common/Label";
 import { Select } from "../form/Select";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CreatePostForm, listCities, updatePost } from "@/services/postService";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 type EditPostModalProps = {
   setShowEditModal: (value: boolean) => void;
@@ -10,22 +15,36 @@ type EditPostModalProps = {
 };
 
 const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
+  const { register, handleSubmit } = useForm<CreatePostForm>({
+    defaultValues: {
+      ...post,
+      image: undefined,
+    },
+  });
+  const onSubmit = async (data: CreatePostForm) => {
+    return await updatePost(post.id, data);
+  };
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation(handleSubmit(onSubmit), {
+    onSuccess() {
+      toast.success("Post atualizado com sucesso");
+      handleCancelClick();
+      return queryClient.invalidateQueries(["profile-posts", post.userId]);
+    },
+    onError(error: AxiosError<{ message: string }>) {
+      toast.error(error.response?.data.message);
+    },
+  });
+
   const resetModalState = () => {
     setShowEditModal(false);
   };
 
-  const handleSaveClick = () => {
-    resetModalState();
-  };
   const handleCancelClick = () => {
     resetModalState();
   };
 
-  const cities = [
-    { name: "Pirapora", value: 1 },
-    { name: "Buritizeiro", value: 2 },
-    { name: "Varzea da Palma", value: 3 },
-  ];
+  const { data: cities } = useQuery(["cities"], () => listCities());
 
   return (
     <dialog id="my_modal_3" className="modal" open>
@@ -45,13 +64,13 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
           </h3>
         </div>
 
-        <form className="gap-4 p-6 items-start grid grid-cols-1 md:max-w-[800px] md:grid-cols-2 ">
+        <div className="gap-4 p-6 items-start grid grid-cols-1 md:max-w-[800px] md:grid-cols-2">
           <div className="flex flex-col  justify-center items-start">
             <Label htmlFor="title">Titulo</Label>
             <input
+              {...register("title")}
               type="text"
               id="title"
-              defaultValue={post?.title}
               placeholder="Digite aqui"
               className="input input-bordered w-full max-w-xs"
             />
@@ -60,10 +79,10 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
           <div className="flex flex-col  justify-center items-start">
             <Label htmlFor="description">Descrição</Label>
             <textarea
+              {...register("description")}
               id="description"
               className="textarea textarea-bordered w-full  max-w-xs"
               placeholder="Descrição"
-              defaultValue={post.description}
               rows={4}
             />
           </div>
@@ -71,10 +90,10 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
           <div className="flex flex-col justify-center items-start">
             <Label htmlFor="oldPrice">Preço antigo</Label>
             <input
+              {...register("oldPrice")}
               id="oldPrice"
               min={0}
               type="number"
-              defaultValue={post?.oldPrice}
               placeholder="R$"
               className="input input-bordered w-full max-w-xs"
             />
@@ -83,10 +102,10 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
           <div className="flex flex-col justify-center items-start">
             <Label htmlFor="promotionPrice">Preço promocional</Label>
             <input
+              {...register("promotionPrice")}
               id="promotionPrice"
               min={0}
               type="number"
-              defaultValue={post?.promotionPrice}
               placeholder="R$"
               className="input input-bordered w-full max-w-xs"
             />
@@ -94,18 +113,25 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
 
           <div className="flex flex-col gap-3">
             <h1 className="font-semibold text-lg">Endereço</h1>
-
-            <div className="flex flex-col  justify-center items-start">
-              <Label>Cidade</Label>
-              <Select list={cities}></Select>
-            </div>
+            {cities ? (
+              <div className="flex flex-col  justify-center items-start">
+                <Label>Cidade</Label>
+                <Select
+                  register={register("address.cityId")}
+                  list={cities.map(({ name, id: value }) => ({
+                    name,
+                    value,
+                  }))}
+                ></Select>
+              </div>
+            ) : null}
 
             <div className="flex flex-col  justify-center items-start">
               <Label htmlFor="street">Rua</Label>
               <input
+                {...register("address.street")}
                 id="street"
                 type="text"
-                defaultValue={post?.address.street}
                 placeholder="Rua"
                 className="input input-bordered w-full max-w-xs"
               />
@@ -116,7 +142,7 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
               <input
                 id="neighborhood"
                 type="text"
-                defaultValue={post?.address.neighborhood}
+                {...register("address.street")}
                 placeholder="Bairro"
                 className="input input-bordered w-full max-w-xs"
               />
@@ -128,7 +154,7 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
                 id="number"
                 type="number"
                 min={0}
-                defaultValue={post?.address.number}
+                {...register("address.number")}
                 placeholder="Número"
                 className="input input-bordered w-full max-w-xs"
               />
@@ -140,16 +166,22 @@ const EditPostModal = ({ setShowEditModal, post }: EditPostModalProps) => {
             <input
               id="postImage"
               type="file"
+              {...register("image")}
               className="file-input w-full max-w-xs"
             />
           </div>
-        </form>
+        </div>
         <div className="flex gap-2 justify-center items-center">
-          <Button onClick={handleSaveClick} color="primary" rounded>
-            Salvar
-          </Button>
           <Button onClick={handleCancelClick} color="danger" rounded>
             Cancelar
+          </Button>
+          <Button
+            onClick={mutate}
+            color="primary"
+            isLoading={isLoading}
+            rounded
+          >
+            Salvar
           </Button>
         </div>
       </form>

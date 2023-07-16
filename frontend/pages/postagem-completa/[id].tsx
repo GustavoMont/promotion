@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { getPost, listPosts } from "@/services/postService";
 import PostsCarousel from "@/components/posts/PostsCarousel";
+import Head from "next/head";
 
 export default function Details() {
   const router = useRouter();
@@ -24,18 +25,23 @@ export default function Details() {
   }, [router]);
 
   return (
-    <div className="flex justify-center items-center">
-      {isLoading && (
-        <>
-          <span className="loading loading-ring loading-xs"></span>
-          <span className="loading loading-ring loading-sm"></span>
-          <span className="loading loading-ring loading-md"></span>
-          <span className="loading loading-ring loading-lg"></span>
-        </>
-      )}
-      {post && <FullPostCard post={post} />}
-      {posts && <PostsCarousel posts={posts} />}
-    </div>
+    <>
+      <Head>
+        <title>Promotion - {post?.title}</title>
+      </Head>
+      <div className="flex justify-center items-center">
+        {isLoading && (
+          <>
+            <span className="loading loading-ring loading-xs"></span>
+            <span className="loading loading-ring loading-sm"></span>
+            <span className="loading loading-ring loading-md"></span>
+            <span className="loading loading-ring loading-lg"></span>
+          </>
+        )}
+        {post && <FullPostCard post={post} />}
+        {posts && <PostsCarousel posts={posts} />}
+      </div>
+    </>
   );
 }
 
