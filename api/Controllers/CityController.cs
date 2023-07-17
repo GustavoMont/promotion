@@ -17,7 +17,6 @@ public class CityController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<ActionResult<List<CityResponse>>> GetAllAsync()
     {
         return Ok(await _service.GetAllAsync());

@@ -56,7 +56,7 @@ const MyPosts = () => {
         </>
       ) : (
         <div className="flex flex-col space-y-5 items-center mt-20">
-          <Title>Você ainda não fex nenhuma publicação =(</Title>
+          <Title>Você ainda não fez nenhuma publicação =(</Title>
           <Button color="primary" className="w-fit" rounded>
             Criar publicação
           </Button>
