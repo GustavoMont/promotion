@@ -9,6 +9,7 @@ import { getToken, getUserToken } from "@/utils/auth";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 import React, { useState } from "react";
 
 const MyPosts = () => {
@@ -58,7 +59,7 @@ const MyPosts = () => {
         <div className="flex flex-col space-y-5 items-center mt-20">
           <Title>Você ainda não fez nenhuma publicação =(</Title>
           <Button color="primary" className="w-fit" rounded>
-            Criar publicação
+            <Link href="/criar-postagem">Criar publicação</Link>
           </Button>
         </div>
       )}

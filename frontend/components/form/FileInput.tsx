@@ -11,7 +11,7 @@ export const FileInput: React.FC<Props> = ({ register, label }) => {
     <div className="form-control w-full max-w-xs">
       {label ? (
         <label className="label">
-          <span className="label-text">Foto do produto:</span>
+          <span className="label-text">Foto de perfil:</span>
         </label>
       ) : null}
       <input
